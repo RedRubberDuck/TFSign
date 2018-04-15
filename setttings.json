@@ -1,0 +1,25 @@
+{
+    "ColorFilter":{
+        "blueInferiorLimit":[98,109,20],
+        "blueSuperiorLimit":[112,255,255],
+        "red1InferiorLimit":[0,200,20],
+        "red1SuperiorLimit":[17,255,255],
+        "red2InferiorLimit":[170,100,20],
+        "red2SuperiorLimit":[180,255,255]
+    },
+    "dilation":{
+        "size":6,
+        "apply":false
+    },
+    "erosion":{
+        "size":6,
+        "apply":false
+    },
+    "ImageSegment":{
+        "GradiantType":0,
+        "kernelSize":2
+    }
+
+    
+
+}
