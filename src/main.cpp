@@ -67,11 +67,11 @@ int main(int argc, char** argv )
     my::ImageSegment l_segment(l_settings);
     std::vector<my::ImageSegment::Segment_t> l_segments;
     l_segment.apply(l_resData.blueMask,l_resData.redMask,l_segments);
-    l_segment.segmenting(l_img,l_segments);
+    // l_segment.segmenting(l_img,l_segments);
     
     cv::Mat l_imgFinalRes;
     cv::bitwise_and(l_img, l_img, l_imgFinalRes, l_resData.Mask);
-    // drawSquare(l_segments,l_img);
+    drawSquare(l_segments,l_img);
     cv::imshow("Rectangle",l_img);
     cv::imshow("Test",l_imgFinalRes);
     cv::waitKey();

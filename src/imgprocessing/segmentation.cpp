@@ -24,6 +24,7 @@ void my::ImageSegment::apply(       const ::cv::Mat&                            
                                     ,std::vector<::my::ImageSegment::Segment_t>&            f_segments){
     applyColor(f_blueMask,::my::ImageSegment::ColorTypes_t::BLUE,f_segments);
     applyColor(f_redMask,::my::ImageSegment::ColorTypes_t::RED,f_segments);
+    verify(f_segments);
 }
 
 void my::ImageSegment::applyColor(   const ::cv::Mat&                                       f_mask
@@ -44,7 +45,7 @@ void my::ImageSegment::applyColor(   const ::cv::Mat&                           
     cv::Mat l_labels, l_centroids,l_stats;
     int nccomps = cv::connectedComponentsWithStats(l_edgeMask,l_labels,l_stats,l_centroids,8,CV_32S);
     
-    // my::ImageSegment::showLabels(nccomps,l_labels,l_stats);
+    my::ImageSegment::showLabels(nccomps,l_labels,l_stats);
     segmentProc(nccomps,l_labels,l_stats,l_centroids,f_color,f_segments);
 }
 
@@ -68,7 +69,7 @@ void my::ImageSegment::segmentProc(     const uint&                             
         // std::cout<<" W:"<<width<<" H:"<<height<<std::endl;
         double l_rate = (double)width/height;
         // std::cout<<"Rate:"<<l_rate<<std::endl;
-        if ( 0.8 < l_rate and l_rate < 1.2){
+        // if ( 0.8 < l_rate and l_rate < 1.2){
             // std::cout<<"Square!!!"<<std::endl;
             my::ImageSegment::Segment_t l_segment;
             l_segment.color = f_color;
@@ -77,40 +78,74 @@ void my::ImageSegment::segmentProc(     const uint&                             
             l_segment.width = width;
             l_segment.height = height;
             f_segments.push_back(l_segment);
-        }else if( 1.95 < l_rate && l_rate>2.05){
-            my::ImageSegment::Segment_t l_segment;
-            l_segment.color = f_color;
-            l_segment.left = left;
-            l_segment.top = top;
-            l_segment.width = width/2;
-            l_segment.height = height;
-            f_segments.push_back(l_segment);
+        // }else if( 1.95 < l_rate && l_rate>2.05){
+        //     my::ImageSegment::Segment_t l_segment;
+        //     l_segment.color = f_color;
+        //     l_segment.left = left;
+        //     l_segment.top = top;
+        //     l_segment.width = width/2;
+        //     l_segment.height = height;
+        //     f_segments.push_back(l_segment);
 
             
-            l_segment.left = left + width/2;
+        //     l_segment.left = left + width/2;
             
-            f_segments.push_back(l_segment);
+        //     f_segments.push_back(l_segment);
 
-        }else if( 0.45 < l_rate && l_rate<0.55){
-            my::ImageSegment::Segment_t l_segment;
-            l_segment.color = f_color;
-            l_segment.left = left;
-            l_segment.top = top;
-            l_segment.width = width;
-            l_segment.height = height/2;
-            f_segments.push_back(l_segment);
+        // }else if( 0.45 < l_rate && l_rate<0.55){
+        //     my::ImageSegment::Segment_t l_segment;
+        //     l_segment.color = f_color;
+        //     l_segment.left = left;
+        //     l_segment.top = top;
+        //     l_segment.width = width;
+        //     l_segment.height = height/2;
+        //     f_segments.push_back(l_segment);
 
             
-            l_segment.top = top+height/2;
+        //     l_segment.top = top+height/2;
 
-            f_segments.push_back(l_segment);
-        }
+        //     f_segments.push_back(l_segment);
+        // }
     }
 }
 
 
 
 
+void my::ImageSegment::verify( std::vector<my::ImageSegment::Segment_t>& l_segments){
+
+    std::vector<my::ImageSegment::Segment_t>::iterator it1, it2;
+    for (it1=l_segments.begin() ; it1 != l_segments.end() - 1 ;){
+        bool deleted=false;
+        for (it2 = it1+1 ; it2 != l_segments.end()  ; ){
+            // std::cout<<(int)(it1-l_segments.begin())<<" "<<(int)(it2-l_segments.begin())<<std::endl;
+            bool l_inX12 = it1->left > it2->left && it1->left < it2->left+it2->width;
+            bool l_inY12 = it1->top > it2->top && it1->top < it2->top+it2->height;
+            
+            bool l_inX21 = it2->left > it1->left && it2->left < it1->left+it1->width;
+            bool l_inY21 = it2->top > it1->top && it2->top < it1->top+it1->height;
+            if( l_inX21 && l_inY21 ){
+                
+                std::cout<<"Inside"<<std::endl;
+                std::cout<<(int)(it2-l_segments.begin())<<" "<<(int)(it1-l_segments.begin())<<std::endl;
+                
+                l_segments.erase(it2);
+            }else if(l_inX12 && l_inY12) {
+                std::cout<<"Inside"<<std::endl;
+                std::cout<<(int)(it1-l_segments.begin())<<" "<<(int)(it2-l_segments.begin())<<std::endl;
+                deleted=true;
+                
+            }else{
+                ++it2;
+            }
+        }
+        if(!deleted){
+            ++it1;
+        }else{
+            l_segments.erase(it1);
+        }
+    }
+}
 
 void my::ImageSegment::showLabels(  const uint&                  f_nccomps
                                     ,const cv::Mat&              f_labels                

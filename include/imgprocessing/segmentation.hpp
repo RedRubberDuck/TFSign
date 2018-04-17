@@ -50,6 +50,8 @@ namespace my{
                                     ,const std::vector<Segment_t>&);
         private:
 
+            void verify(    std::vector<Segment_t>&);
+
             ImgSegGradType_t            m_gradiantType;
             uint                        m_kernelSize;
             cv::Mat                     m_kernel;

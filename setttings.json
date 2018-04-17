@@ -8,16 +8,16 @@
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{
-        "size":6,
+        "size":1,
         "apply":false
     },
     "erosion":{
-        "size":6,
+        "size":1,
         "apply":false
     },
     "ImageSegment":{
         "GradiantType":0,
-        "kernelSize":2
+        "kernelSize":1
     }
 
     
