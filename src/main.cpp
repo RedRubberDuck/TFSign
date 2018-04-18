@@ -54,21 +54,20 @@ void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mas
     std::vector<my::ImageSegment::Segment_t>::iterator it;
     uint l_kernelSize = 1;
     cv::Mat l_kernel = cv::getStructuringElement(cv::MORPH_CROSS,cv::Size(2 * l_kernelSize + 1, 2 * l_kernelSize + 1),cv::Point(l_kernelSize, l_kernelSize));
-
+    cv::RNG rng(12345);
     for (it=l_segments.begin();it!=l_segments.end();++it){
         
         
         cv::Range l_x(it->left,it->left+it->width);
         cv::Range l_y(it->top,it->top+it->height);
 
-        
-        cv::RNG rng(12345);
         cv::Mat l_sign;
+        // =cv::Mat::zeros(it->width+10,it->height+10,CV_8UC3);
 
         cv::copyMakeBorder( l_mask(l_y,l_x), l_sign, 5, 5, 5, 5, cv::BORDER_CONSTANT,cv::Scalar(0,0,0));
         
         
-        cv::Mat l_edge;
+        // cv::Mat l_edge;
         // cv::Laplacian(x1,l_edge,CV_8U, 2, 1, 0, cv::BORDER_DEFAULT );
         // cv::morphologyEx(x1,l_edge,cv::MORPH_GRADIENT,l_kernel);
 
@@ -85,13 +84,15 @@ void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mas
         cv::imshow("W",l_sign);
         cv::imshow("Count",drawing);
         cv::waitKey();
+        cv::destroyAllWindows();
     }
 }
 
 
 int main(int argc, char** argv )
 {
-    std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    std::string l_str = "C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\TFSign\\setttings.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
 
     my::Settings l_settings = my::Settings::readFile(l_str); 
@@ -99,7 +100,9 @@ int main(int argc, char** argv )
     printSettings(l_settings);
     
     my::ColorFilter l_prepocess(l_settings);
-    cv::Mat l_img = cv::imread("/home/nandi/Roadsigns.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat l_img = cv::imread("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\traffic_signs.png", CV_LOAD_IMAGE_COLOR);
+    std::cout << l_img.size() << std::endl;
+    // cv::Mat l_img = cv::imread("/home/nandi/Roadsigns.jpg", CV_LOAD_IMAGE_COLOR);
     my::ColorFilter::ColorFilter_Data l_resData = l_prepocess.apply(l_img);
     // cv::Mat l_img_res = l_prepocess.apply(l_img);
 

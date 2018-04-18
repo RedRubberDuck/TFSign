@@ -134,7 +134,7 @@ void my::ImageSegment::verify( std::vector<my::ImageSegment::Segment_t>& l_segme
                 std::cout<<"Inside"<<std::endl;
                 std::cout<<(int)(it1-l_segments.begin())<<" "<<(int)(it2-l_segments.begin())<<std::endl;
                 deleted=true;
-                
+                break;
             }else{
                 ++it2;
             }
