@@ -7,19 +7,10 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <dirent.h>
 
-void printSettings( const my::Settings& f_settings){
-    
-    // Printed the blue range
-    std::cout<<"Blue inferior:"<<(float)f_settings.getblueInferior()[0]<<","<<f_settings.getblueInferior()[1]/255.0<<","<<f_settings.getblueInferior()[2]/255.0<<std::endl;
-    std::cout<<"Blue superior:"<<(float)f_settings.getblueSuperior()[0]<<","<<f_settings.getblueSuperior()[1]/255.0<<","<<f_settings.getblueSuperior()[2]/255.0<<std::endl;
-    // Printed the fist red range
-    std::cout<<"Red1 inferior:"<<(float)f_settings.getred1Inferior()[0]<<","<<f_settings.getred1Inferior()[1]/255.0<<","<<f_settings.getred1Inferior()[2]/255.0<<std::endl;
-    std::cout<<"Red1 superior:"<<(float)f_settings.getred1Superior()[0]<<","<<f_settings.getred1Superior()[1]/255.0<<","<<f_settings.getred1Superior()[2]/255.0<<std::endl;
-    // Printed the second red range
-    std::cout<<"Red2 inferior:"<<(float)f_settings.getred2Inferior()[0]<<","<<f_settings.getred2Inferior()[1]/255.0<<","<<f_settings.getred2Inferior()[2]/255.0<<std::endl;
-    std::cout<<"Red2 superior:"<<(float)f_settings.getred2Superior()[0]<<","<<f_settings.getred2Superior()[1]/255.0<<","<<f_settings.getred2Superior()[2]/255.0<<std::endl;
-}
+void readFromFolderImages(const std::string &,std::vector<cv::Mat>&);
 
 
 void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
@@ -51,34 +42,16 @@ void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
     }
 }
 
+void applyhog(cv::Mat l_img);
 
-void hog(cv::Mat l_img){
-    cv::cvtColor(l_img,l_img,CV_RGB2GRAY);
-    l_img.convertTo(l_img,CV_32F,1.0/255.0);
-    cv::HOGDescriptor d1( cv::Size(64,8), cv::Size(8,8), cv::Size(4,4), cv::Size(4,4), 9);
-    std::vector< float> descriptorsValues1;
-    std::vector< cv::Point> locations1;
-    d1.compute( l_img, descriptorsValues1, cv::Size(0,0), cv::Size(0,0), locations1);
-    // cv::Mat gx,gy;
-
-    // // Sobel(img, gx, CV_32F, 1, 0, 1);
-    // cv::Sobel(l_img,gx,CV_32F, 1, 0, 1);
-    // cv::Sobel(l_img,gy,CV_32F, 0, 1, 1);
-
-    // cv::Mat magnitude, angle;
-    // cv::cartToPolar(gx, gy, magnitude, angle, 1); 
-
-    // cv::imshow("magnitude",magnitude);
-    // cv::imshow("angle",angle);
-
-    // cv::waitKey();
-}
+void saveImage(uint index, const cv::Mat l_img);
 
 void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mask){
     std::vector<my::ImageSegment::Segment_t>::iterator it;
     uint l_kernelSize = 1;
     cv::Mat l_kernel = cv::getStructuringElement(cv::MORPH_CROSS,cv::Size(2 * l_kernelSize + 1, 2 * l_kernelSize + 1),cv::Point(l_kernelSize, l_kernelSize));
     cv::RNG rng(12345);
+    uint i = 0;
     for (it=l_segments.begin();it!=l_segments.end();++it){
         
         
@@ -87,24 +60,10 @@ void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mas
 
         cv::Mat l_sign;
         cv::resize(l_mask(l_y,l_x),l_sign,cv::Size(64,64));
-        hog(l_sign);
-
-        // cv::copyMakeBorder( l_mask(l_y,l_x), l_sign, 5, 5, 5, 5, cv::BORDER_CONSTANT,cv::Scalar(255,255,255));
+        applyhog(l_sign);
+      
+        ++i;
         
-        
-        // // cv::Mat l_edge;
-        // // cv::Laplacian(x1,l_edge,CV_8U, 2, 1, 0, cv::BORDER_DEFAULT );
-        // // cv::morphologyEx(x1,l_edge,cv::MORPH_GRADIENT,l_kernel);
-
-        // // std::vector<std::vector<cv::Point> > l_contours;
-        // // cv::findContours( l_sign, l_contours,cv::RETR_EXTERNAL  ,cv:: CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
-
-        // // cv::Mat drawing = cv::Mat::zeros( l_sign.size(), CV_8UC3 );
-        // // for( size_t i = 0; i< l_contours.size(); i++ )
-        // // {
-        // //     cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-        // //     cv::drawContours( drawing, l_contours, (int)i, color);
-        // // }
 
         cv::imshow("W",l_sign);
         // // cv::imshow("Count",drawing);
@@ -116,18 +75,17 @@ void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mas
 
 int main(int argc, char** argv )
 {
-    std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
-    // std::string l_str = "C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\TFSign\\setttings.json";
+    // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    std::string l_str = "..\\setttings.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
-
-    my::Settings l_settings = my::Settings::readFile(l_str); 
-
-    printSettings(l_settings);
+    std::vector<cv::Mat> l_imgContainer;
     
+    my::Settings l_settings = my::Settings::readFile(l_str); 
+    readFromFolderImages(l_settings.getStopFolder(),l_imgContainer);
     my::ColorFilter l_prepocess(l_settings);
-    // cv::Mat l_img = cv::imread("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\traffic_signs.png", CV_LOAD_IMAGE_COLOR);
+    cv::Mat l_img = cv::imread(l_settings.getImageName().c_str(), CV_LOAD_IMAGE_COLOR);
     // cv::Mat l_img = cv::imread("/home/nandi/Roadsigns.jpg", CV_LOAD_IMAGE_COLOR);
-    cv::Mat l_img = cv::imread("/home/nandi/Workspaces/git/resource/TrafficSignPics/Stop.png", CV_LOAD_IMAGE_COLOR);
+    // cv::Mat l_img = cv::imread("/home/nandi/Workspaces/git/resource/TrafficSignPics/Stop.png", CV_LOAD_IMAGE_COLOR);
     my::ColorFilter::ColorFilter_Data l_resData = l_prepocess.apply(l_img);
     // cv::Mat l_img_res = l_prepocess.apply(l_img);
 
@@ -147,3 +105,68 @@ int main(int argc, char** argv )
     
     return 0;
 }
+
+
+
+
+void applyhog(cv::Mat l_img){
+
+    cv::cvtColor(l_img, l_img, cv::COLOR_BGR2GRAY);
+    cv::HOGDescriptor l_hog(l_img.size(),cv::Size(16,16),cv::Size(8,8),cv::Size(8,8), 9, 1);
+    std::vector<float> l_descriptors;
+    l_hog.compute(l_img, l_descriptors,cv::Size( 8, 8 ),cv::Size( 0, 0 ));
+    std::vector<float>::iterator it;
+    std::cout << "Size description:" << l_descriptors.size() << std::endl;
+    cv::get_hogdescriptor_visual_image();
+    // for (it = l_descriptors.begin();it!=l_descriptors.end();++it){
+    //     std::cout << " " << *it << ",";
+    // }
+}
+
+
+void saveImage(uint index, const cv::Mat l_img){
+    std::ostringstream s;
+    s << "img" << index<<".jpg";
+    std::string query(s.str());
+    cv::imwrite(query.c_str(), l_img);
+}
+
+
+
+void readFromFolderImages(const std::string & f_folder, std::vector<cv::Mat>& l_imgContainer ){
+    DIR *dir  =opendir(f_folder.c_str());
+    if(dir){
+        struct dirent *ent;
+        while((ent = readdir(dir)) !=NULL){
+            std::string l_fileName = ent->d_name;
+            std::string l_fileExtension = l_fileName.substr(l_fileName.find_last_of(".") + 1);
+            if(l_fileExtension == "jpg" || l_fileExtension == "ppm" || l_fileExtension == "png"){
+                std::string l_fullpath = f_folder;
+                l_fullpath.append(l_fileName);
+                cv::Mat l_img = cv::imread(l_fullpath, CV_LOAD_IMAGE_COLOR);
+                l_imgContainer.push_back(l_img);
+            }
+        }
+    }
+}
+
+
+
+
+// DELETED CODES
+// cv::copyMakeBorder( l_mask(l_y,l_x), l_sign, 5, 5, 5, 5, cv::BORDER_CONSTANT,cv::Scalar(255,255,255));
+        
+
+// // cv::Mat l_edge;
+// // cv::Laplacian(x1,l_edge,CV_8U, 2, 1, 0, cv::BORDER_DEFAULT );
+// // cv::morphologyEx(x1,l_edge,cv::MORPH_GRADIENT,l_kernel);
+
+// // std::vector<std::vector<cv::Point> > l_contours;
+// // cv::findContours( l_sign, l_contours,cv::RETR_EXTERNAL  ,cv:: CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+
+// // cv::Mat drawing = cv::Mat::zeros( l_sign.size(), CV_8UC3 );
+// // for( size_t i = 0; i< l_contours.size(); i++ )
+// // {
+// //     cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+// //     cv::drawContours( drawing, l_contours, (int)i, color);
+// // }

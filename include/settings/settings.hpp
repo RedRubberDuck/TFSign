@@ -18,7 +18,10 @@ namespace my{
     class Settings{
         public:
         Settings();
-        Settings(const ::cv::Vec3b&,
+        Settings(const std::string&,
+                const std::string&,
+                const std::string&,
+                const ::cv::Vec3b&,
                 const ::cv::Vec3b&,
                 const ::cv::Vec3b&,
                 const ::cv::Vec3b&,
@@ -55,28 +58,35 @@ namespace my{
 
         double getInferiorSquareRate() const;
         double getSuperiorSquareRate() const;
-        
-        private:
-            //----------------------------------------------------
-            //              Limits parameters
-            ::cv::Vec3b                 m_blueInferior;
-            ::cv::Vec3b                 m_blueSuperior;
-            ::cv::Vec3b                 m_red1Inferior;
-            ::cv::Vec3b                 m_red1Superior;
-            ::cv::Vec3b                 m_red2Inferior;
-            ::cv::Vec3b                 m_red2Superior;
-            //----------------------------------------------------
-            //      Dilation and erision parameters
-            uint                        m_dilationSize;
-            bool                        m_dilationApply;
-            uint                        m_erosionSize;
-            bool                        m_erosionsApply;
-            //----------------------------------------------------
-            //      Image segmentation parameters
-            my::ImgSegGradType_t        m_ImgSegment_gradType;
-            uint                        m_ImgSegment_kernelSize;
-            double                      m_InferiorSquareRate;
-            double                      m_SuperiorSquareRate;      
+        std::string getImageName() const;
+        std::string getStopFolder() const;
+        std::string getNegativFolder() const;
+
+      private:
+        //----------------------------------------------------
+        std::string m_image;
+        std::string m_stopSignFolder;
+        std::string m_negativFolder;
+        //----------------------------------------------------
+        //              Limits parameters
+        ::cv::Vec3b m_blueInferior;
+        ::cv::Vec3b m_blueSuperior;
+        ::cv::Vec3b m_red1Inferior;
+        ::cv::Vec3b m_red1Superior;
+        ::cv::Vec3b m_red2Inferior;
+        ::cv::Vec3b m_red2Superior;
+        //----------------------------------------------------
+        //      Dilation and erision parameters
+        uint m_dilationSize;
+        bool m_dilationApply;
+        uint m_erosionSize;
+        bool m_erosionsApply;
+        //----------------------------------------------------
+        //      Image segmentation parameters
+        my::ImgSegGradType_t m_ImgSegment_gradType;
+        uint m_ImgSegment_kernelSize;
+        double m_InferiorSquareRate;
+        double m_SuperiorSquareRate;      
     };
 
 };

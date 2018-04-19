@@ -12,7 +12,10 @@ my::Settings::Settings()
 
 
 my::Settings::Settings(
-                const ::cv::Vec3b&                      f_blueInferior
+                const std::string&                      f_image    
+                ,const std::string&                     f_stopSignFolder    
+                ,const std::string&                     f_negativFolder
+                ,const ::cv::Vec3b&                     f_blueInferior
                 ,const ::cv::Vec3b&                     f_blueSuperior
                 ,const ::cv::Vec3b&                     f_red1Inferior
                 ,const ::cv::Vec3b&                     f_red1Superior
@@ -22,11 +25,14 @@ my::Settings::Settings(
                 ,const bool&                            f_dilationApply
                 ,const uint&                            f_erosionSize
                 ,const bool&                            f_erosionApply
-                ,const my::ImgSegGradType_t&   f_ImgSegment_gradType
+                ,const my::ImgSegGradType_t&            f_ImgSegment_gradType
                 ,const uint&                            f_ImgSegment_kernelSize
                 ,const double&                          f_inferiorSquareRate
                 ,const double&                          f_superiorSquareRate)
-    :m_blueInferior(f_blueInferior)
+    :m_image(f_image)
+    ,m_stopSignFolder(f_stopSignFolder)
+    ,m_negativFolder(f_negativFolder)
+    ,m_blueInferior(f_blueInferior)
     ,m_blueSuperior(f_blueSuperior)
     ,m_red1Inferior(f_red1Inferior)
     ,m_red1Superior(f_red1Superior)
@@ -66,8 +72,13 @@ my::Settings my::Settings::readFile(const std::string& fileName){
 
     my::Settings::setLimit(l_red2Inf,l_colorFilter["red2InferiorLimit"]);
     my::Settings::setLimit(l_red2Sup,l_colorFilter["red2SuperiorLimit"]);
-    
-    
+
+    std::string l_img = doc["inputImage"].GetString();
+    std::string l_stopFolder = doc["stopFolder"].GetString();
+    std::string l_negativFolder = doc["negativFolder"].GetString();
+
+    std::cout << "Img" << l_img << std::endl;
+
     rapidjson::Value& l_dilationJson = doc["dilation"];
     uint l_dilationSize = l_dilationJson["size"].GetInt();
     bool l_dilationApply = l_dilationJson["apply"].GetBool();
@@ -98,7 +109,10 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     }
 
 
-    my::Settings l_settings(    l_blueInfCv
+    my::Settings l_settings(    l_img
+                                ,l_stopFolder
+                                ,l_negativFolder
+                                ,l_blueInfCv
                                 ,l_blueSupCv
                                 ,l_red1Inf
                                 ,l_red1Sup
@@ -179,4 +193,16 @@ double my::Settings::getInferiorSquareRate() const{
 
 double my::Settings::getSuperiorSquareRate() const{
     return m_SuperiorSquareRate;
+}
+
+std::string my::Settings::getImageName() const{
+    return m_image;
+}
+
+std::string my::Settings::getStopFolder() const{
+    return m_stopSignFolder;
+}
+
+std::string my::Settings::getNegativFolder() const{
+    return m_negativFolder;
 }
