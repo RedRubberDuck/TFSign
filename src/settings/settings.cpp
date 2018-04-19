@@ -23,7 +23,9 @@ my::Settings::Settings(
                 ,const uint&                            f_erosionSize
                 ,const bool&                            f_erosionApply
                 ,const my::ImgSegGradType_t&   f_ImgSegment_gradType
-                ,const uint&                            f_ImgSegment_kernelSize)
+                ,const uint&                            f_ImgSegment_kernelSize
+                ,const double&                          f_inferiorSquareRate
+                ,const double&                          f_superiorSquareRate)
     :m_blueInferior(f_blueInferior)
     ,m_blueSuperior(f_blueSuperior)
     ,m_red1Inferior(f_red1Inferior)
@@ -36,6 +38,8 @@ my::Settings::Settings(
     ,m_erosionsApply(f_erosionApply)
     ,m_ImgSegment_gradType(f_ImgSegment_gradType)
     ,m_ImgSegment_kernelSize(f_ImgSegment_kernelSize)
+    ,m_InferiorSquareRate(f_inferiorSquareRate)
+    ,m_SuperiorSquareRate(f_superiorSquareRate)
 {}
 
 
@@ -75,6 +79,8 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     rapidjson::Value&  l_imgSegmentJson = doc["ImageSegment"];
     uint l_ImgSeg_gradType_i = l_imgSegmentJson["GradiantType"].GetInt();
     uint l_ImgSeg_kernelSize = l_imgSegmentJson["kernelSize"].GetInt();
+    double l_InferiorSquareRate = l_imgSegmentJson["InferiorSquareRate"].GetDouble();
+    double l_SuperiorSquareRate = l_imgSegmentJson["SuperiorSquareRate"].GetDouble();
 
     my::ImgSegGradType_t l_ImgSeg_gradType;
     switch(l_ImgSeg_gradType_i){
@@ -103,7 +109,9 @@ my::Settings my::Settings::readFile(const std::string& fileName){
                                 ,l_erosionSize
                                 ,l_erosionApply
                                 ,l_ImgSeg_gradType
-                                ,l_ImgSeg_kernelSize);
+                                ,l_ImgSeg_kernelSize
+                                ,l_InferiorSquareRate
+                                ,l_SuperiorSquareRate);
     return l_settings;
 }
 
@@ -163,4 +171,12 @@ my::ImgSegGradType_t my::Settings::getImgSegmentGradType() const{
 
 uint my::Settings::getImgSegmentKernelSize() const{
     return m_ImgSegment_kernelSize;
+}
+
+double my::Settings::getInferiorSquareRate() const{
+    return m_InferiorSquareRate;
+}
+
+double my::Settings::getSuperiorSquareRate() const{
+    return m_SuperiorSquareRate;
 }

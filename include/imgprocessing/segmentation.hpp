@@ -55,6 +55,8 @@ namespace my{
             ImgSegGradType_t            m_gradiantType;
             uint                        m_kernelSize;
             cv::Mat                     m_kernel;
+            const double                m_InferiorRate;
+            const double                m_SuperiorRate;
 
 
     };

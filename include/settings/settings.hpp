@@ -29,7 +29,9 @@ namespace my{
                 const uint&,
                 const bool&,
                 const my::ImgSegGradType_t&,
-                const uint&);
+                const uint&,
+                const double&,
+                const double&);
 
         static Settings readFile(const std::string&);
         static void setLimit(cv::Vec3b&, const rapidjson::Value&);
@@ -50,6 +52,9 @@ namespace my{
 
         my::ImgSegGradType_t getImgSegmentGradType() const;
         uint getImgSegmentKernelSize() const;
+
+        double getInferiorSquareRate() const;
+        double getSuperiorSquareRate() const;
         
         private:
             //----------------------------------------------------
@@ -69,7 +74,9 @@ namespace my{
             //----------------------------------------------------
             //      Image segmentation parameters
             my::ImgSegGradType_t        m_ImgSegment_gradType;
-            uint                                m_ImgSegment_kernelSize;      
+            uint                        m_ImgSegment_kernelSize;
+            double                      m_InferiorSquareRate;
+            double                      m_SuperiorSquareRate;      
     };
 
 };

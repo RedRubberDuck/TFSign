@@ -3,6 +3,7 @@
 #include <settings/settings.hpp>
 
 #include <opencv2/opencv.hpp>
+// #include <opencv2/>
 
 #include <string>
 #include <iostream>
@@ -50,6 +51,29 @@ void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
     }
 }
 
+
+void hog(cv::Mat l_img){
+    cv::cvtColor(l_img,l_img,CV_RGB2GRAY);
+    l_img.convertTo(l_img,CV_32F,1.0/255.0);
+    cv::HOGDescriptor d1( cv::Size(64,8), cv::Size(8,8), cv::Size(4,4), cv::Size(4,4), 9);
+    std::vector< float> descriptorsValues1;
+    std::vector< cv::Point> locations1;
+    d1.compute( l_img, descriptorsValues1, cv::Size(0,0), cv::Size(0,0), locations1);
+    // cv::Mat gx,gy;
+
+    // // Sobel(img, gx, CV_32F, 1, 0, 1);
+    // cv::Sobel(l_img,gx,CV_32F, 1, 0, 1);
+    // cv::Sobel(l_img,gy,CV_32F, 0, 1, 1);
+
+    // cv::Mat magnitude, angle;
+    // cv::cartToPolar(gx, gy, magnitude, angle, 1); 
+
+    // cv::imshow("magnitude",magnitude);
+    // cv::imshow("angle",angle);
+
+    // cv::waitKey();
+}
+
 void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mask){
     std::vector<my::ImageSegment::Segment_t>::iterator it;
     uint l_kernelSize = 1;
@@ -62,37 +86,38 @@ void countour(std::vector<my::ImageSegment::Segment_t> l_segments,cv::Mat& l_mas
         cv::Range l_y(it->top,it->top+it->height);
 
         cv::Mat l_sign;
-        // =cv::Mat::zeros(it->width+10,it->height+10,CV_8UC3);
+        cv::resize(l_mask(l_y,l_x),l_sign,cv::Size(64,64));
+        hog(l_sign);
 
-        cv::copyMakeBorder( l_mask(l_y,l_x), l_sign, 5, 5, 5, 5, cv::BORDER_CONSTANT,cv::Scalar(0,0,0));
+        // cv::copyMakeBorder( l_mask(l_y,l_x), l_sign, 5, 5, 5, 5, cv::BORDER_CONSTANT,cv::Scalar(255,255,255));
         
         
-        // cv::Mat l_edge;
-        // cv::Laplacian(x1,l_edge,CV_8U, 2, 1, 0, cv::BORDER_DEFAULT );
-        // cv::morphologyEx(x1,l_edge,cv::MORPH_GRADIENT,l_kernel);
+        // // cv::Mat l_edge;
+        // // cv::Laplacian(x1,l_edge,CV_8U, 2, 1, 0, cv::BORDER_DEFAULT );
+        // // cv::morphologyEx(x1,l_edge,cv::MORPH_GRADIENT,l_kernel);
 
-        std::vector<std::vector<cv::Point> > l_contours;
-        cv::findContours( l_sign, l_contours,cv::RETR_EXTERNAL  ,cv:: CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+        // // std::vector<std::vector<cv::Point> > l_contours;
+        // // cv::findContours( l_sign, l_contours,cv::RETR_EXTERNAL  ,cv:: CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
-        cv::Mat drawing = cv::Mat::zeros( l_sign.size(), CV_8UC3 );
-        for( size_t i = 0; i< l_contours.size(); i++ )
-        {
-            cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-            cv::drawContours( drawing, l_contours, (int)i, color);
-        }
+        // // cv::Mat drawing = cv::Mat::zeros( l_sign.size(), CV_8UC3 );
+        // // for( size_t i = 0; i< l_contours.size(); i++ )
+        // // {
+        // //     cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+        // //     cv::drawContours( drawing, l_contours, (int)i, color);
+        // // }
 
         cv::imshow("W",l_sign);
-        cv::imshow("Count",drawing);
+        // // cv::imshow("Count",drawing);
         cv::waitKey();
-        cv::destroyAllWindows();
+        // cv::destroyAllWindows();
     }
 }
 
 
 int main(int argc, char** argv )
 {
-    // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
-    std::string l_str = "C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\TFSign\\setttings.json";
+    std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    // std::string l_str = "C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\TFSign\\setttings.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
 
     my::Settings l_settings = my::Settings::readFile(l_str); 
@@ -100,9 +125,9 @@ int main(int argc, char** argv )
     printSettings(l_settings);
     
     my::ColorFilter l_prepocess(l_settings);
-    cv::Mat l_img = cv::imread("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\traffic_signs.png", CV_LOAD_IMAGE_COLOR);
-    std::cout << l_img.size() << std::endl;
+    // cv::Mat l_img = cv::imread("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\traffic_signs.png", CV_LOAD_IMAGE_COLOR);
     // cv::Mat l_img = cv::imread("/home/nandi/Roadsigns.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat l_img = cv::imread("/home/nandi/Workspaces/git/resource/TrafficSignPics/Stop.png", CV_LOAD_IMAGE_COLOR);
     my::ColorFilter::ColorFilter_Data l_resData = l_prepocess.apply(l_img);
     // cv::Mat l_img_res = l_prepocess.apply(l_img);
 
@@ -113,7 +138,7 @@ int main(int argc, char** argv )
     
     cv::Mat l_imgFinalRes;
     cv::bitwise_and(l_img, l_img, l_imgFinalRes, l_resData.Mask);
-    countour(l_segments,l_resData.Mask);
+    countour(l_segments,l_img);
 
     drawSquare(l_segments,l_img);
     cv::imshow("Rectangle",l_img);

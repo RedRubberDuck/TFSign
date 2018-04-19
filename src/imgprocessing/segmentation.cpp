@@ -6,6 +6,8 @@ my::ImageSegment::ImageSegment( const ImgSegGradType_t&             f_gradiantTy
     :m_gradiantType(f_gradiantType)
     ,m_kernelSize(f_kernelSize * 2 + 1)
     ,m_kernel(cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(2 * f_kernelSize+ 1, 2 * f_kernelSize + 1),cv::Point(f_kernelSize, f_kernelSize)))
+    ,m_InferiorRate(0.8)
+    ,m_SuperiorRate(1.2)
 {
 }
 
@@ -14,6 +16,8 @@ my::ImageSegment::ImageSegment( const my::Settings&     f_settings)
     :m_gradiantType(f_settings.getImgSegmentGradType())
     ,m_kernelSize(f_settings.getImgSegmentKernelSize() * 2 + 1)
     ,m_kernel(cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(2 * f_settings.getImgSegmentKernelSize()+ 1, 2 * f_settings.getImgSegmentKernelSize() + 1),cv::Point(f_settings.getImgSegmentKernelSize(), f_settings.getImgSegmentKernelSize())))
+    ,m_InferiorRate(f_settings.getInferiorSquareRate())
+    ,m_SuperiorRate(f_settings.getSuperiorSquareRate())
 {
 }
 
@@ -69,7 +73,7 @@ void my::ImageSegment::segmentProc(     const uint&                             
         // std::cout<<" W:"<<width<<" H:"<<height<<std::endl;
         double l_rate = (double)width/height;
         // std::cout<<"Rate:"<<l_rate<<std::endl;
-        // if ( 0.8 < l_rate and l_rate < 1.2){
+        if ( 0.8 < l_rate and l_rate < 1.2){
             // std::cout<<"Square!!!"<<std::endl;
             my::ImageSegment::Segment_t l_segment;
             l_segment.color = f_color;
@@ -78,6 +82,7 @@ void my::ImageSegment::segmentProc(     const uint&                             
             l_segment.width = width;
             l_segment.height = height;
             f_segments.push_back(l_segment);
+        }
         // }else if( 1.95 < l_rate && l_rate>2.05){
         //     my::ImageSegment::Segment_t l_segment;
         //     l_segment.color = f_color;

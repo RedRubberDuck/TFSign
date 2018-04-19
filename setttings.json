@@ -17,7 +17,9 @@
     },
     "ImageSegment":{
         "GradiantType":0,
-        "kernelSize":1
+        "kernelSize":1,
+        "InferiorSquareRate":0.8,
+        "SuperiorSquareRate":1.2
     }
 
     
