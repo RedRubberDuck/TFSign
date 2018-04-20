@@ -17,7 +17,6 @@
 namespace my{
     class Settings{
         public:
-        Settings();
         Settings(const std::string&,
                 const std::string&,
                 const std::string&,
@@ -34,7 +33,11 @@ namespace my{
                 const my::ImgSegGradType_t&,
                 const uint&,
                 const double&,
-                const double&);
+                const double&,
+                const cv::Size&,
+                const cv::Size&,
+                const cv::Size&,
+                const uint&);
 
         static Settings readFile(const std::string&);
         static void setLimit(cv::Vec3b&, const rapidjson::Value&);
@@ -62,7 +65,14 @@ namespace my{
         std::string getStopFolder() const;
         std::string getNegativFolder() const;
 
+        cv::Size getHogImageSize() const;
+        cv::Size getHogCellSize() const;
+        cv::Size getHogBlockSize() const;
+        uint getHogNrBins() const;
+
       private:
+
+
         //----------------------------------------------------
         std::string m_image;
         std::string m_stopSignFolder;
@@ -86,7 +96,14 @@ namespace my{
         my::ImgSegGradType_t m_ImgSegment_gradType;
         uint m_ImgSegment_kernelSize;
         double m_InferiorSquareRate;
-        double m_SuperiorSquareRate;      
+        double m_SuperiorSquareRate;
+        //----------------------------------------------------
+        //      Hog parameters
+        cv::Size m_imgSize;
+        cv::Size m_cellSize;
+        cv::Size m_blockSize;
+        uint m_nrBins;
+
     };
 
 };

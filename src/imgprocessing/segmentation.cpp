@@ -28,6 +28,7 @@ void my::ImageSegment::apply(       const ::cv::Mat&                            
                                     ,std::vector<::my::ImageSegment::Segment_t>&            f_segments){
     applyColor(f_blueMask,::my::ImageSegment::ColorTypes_t::BLUE,f_segments);
     applyColor(f_redMask,::my::ImageSegment::ColorTypes_t::RED,f_segments);
+    std::cout << "Verify";
     verify(f_segments);
 }
 
@@ -72,8 +73,10 @@ void my::ImageSegment::segmentProc(     const uint&                             
         }
         // std::cout<<" W:"<<width<<" H:"<<height<<std::endl;
         double l_rate = (double)width/height;
+        // uint l_size = width * height;
+        // std::cout << "Size:" << l_size;
         // std::cout<<"Rate:"<<l_rate<<std::endl;
-        if ( m_InferiorRate < l_rate && l_rate < m_SuperiorRate){
+        if ( (m_InferiorRate < l_rate && l_rate < m_SuperiorRate) ){
             // std::cout<<"Square!!!"<<std::endl;
             my::ImageSegment::Segment_t l_segment;
             l_segment.color = f_color;
@@ -120,6 +123,8 @@ void my::ImageSegment::segmentProc(     const uint&                             
 void my::ImageSegment::verify( std::vector<my::ImageSegment::Segment_t>& l_segments){
 
     std::vector<my::ImageSegment::Segment_t>::iterator it1, it2;
+    if(l_segments.size()<2)
+        return;
     for (it1=l_segments.begin() ; it1 != l_segments.end() - 1 ;){
         bool deleted=false;
         for (it2 = it1+1 ; it2 != l_segments.end()  ; ){
@@ -156,7 +161,7 @@ void my::ImageSegment::showLabels(  const uint&                  f_nccomps
                                     ,const cv::Mat&              f_labels                
                                     ,const cv::Mat&              f_stats
                                     ){
-    std::cout<<"Nr comps:"<<f_nccomps <<std::endl;
+    // std::cout<<"Nr comps:"<<f_nccomps <<std::endl;
     std::vector<cv::Vec3b> colors(f_nccomps+1);
     colors[0] = cv::Vec3b(0,0,0); // background pixels remain black.
     for(uint i = 1; i <= f_nccomps; i++ ) {

@@ -1,14 +1,5 @@
 #include <settings/settings.hpp>
 
-my::Settings::Settings()
-    :m_blueInferior({0,0,0})
-    ,m_blueSuperior({0,0,0})
-    ,m_red1Inferior({0,0,0})
-    ,m_red1Superior({0,0,0})
-    ,m_red2Inferior({0,0,0})
-    ,m_red2Superior({0,0,0})
-{
-}
 
 
 my::Settings::Settings(
@@ -28,7 +19,11 @@ my::Settings::Settings(
                 ,const my::ImgSegGradType_t&            f_ImgSegment_gradType
                 ,const uint&                            f_ImgSegment_kernelSize
                 ,const double&                          f_inferiorSquareRate
-                ,const double&                          f_superiorSquareRate)
+                ,const double&                          f_superiorSquareRate
+                ,const cv::Size&                        f_imgSize
+                ,const cv::Size&                        f_cellSize
+                ,const cv::Size&                        f_blockSize
+                ,const uint&                            f_nrBins)
     :m_image(f_image)
     ,m_stopSignFolder(f_stopSignFolder)
     ,m_negativFolder(f_negativFolder)
@@ -46,6 +41,10 @@ my::Settings::Settings(
     ,m_ImgSegment_kernelSize(f_ImgSegment_kernelSize)
     ,m_InferiorSquareRate(f_inferiorSquareRate)
     ,m_SuperiorSquareRate(f_superiorSquareRate)
+    ,m_imgSize(f_imgSize)
+    ,m_cellSize(f_cellSize)
+    ,m_blockSize(f_blockSize)
+    ,m_nrBins(f_nrBins)
 {}
 
 
@@ -109,6 +108,16 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     }
 
 
+    // ------------------------------------------------------------------
+    // Hog parameters identify
+    rapidjson::Value&  l_hogPrameters = doc["hogParams"];
+    cv::Size l_imgSize(l_hogPrameters["imageSize"][0].GetInt(),l_hogPrameters["imageSize"][1].GetInt());
+    cv::Size l_cellSize(l_hogPrameters["cellSize"][0].GetInt(),l_hogPrameters["cellSize"][1].GetInt());
+    cv::Size l_blockSize(l_hogPrameters["blockSize"][0].GetInt()*l_cellSize.width,l_hogPrameters["blockSize"][1].GetInt()*l_cellSize.height);
+    uint l_nrBins = l_hogPrameters["nrBins"].GetInt();
+    
+
+
     my::Settings l_settings(    l_img
                                 ,l_stopFolder
                                 ,l_negativFolder
@@ -125,7 +134,11 @@ my::Settings my::Settings::readFile(const std::string& fileName){
                                 ,l_ImgSeg_gradType
                                 ,l_ImgSeg_kernelSize
                                 ,l_InferiorSquareRate
-                                ,l_SuperiorSquareRate);
+                                ,l_SuperiorSquareRate
+                                ,l_imgSize
+                                ,l_cellSize
+                                ,l_blockSize
+                                ,l_nrBins);
     return l_settings;
 }
 
@@ -205,4 +218,22 @@ std::string my::Settings::getStopFolder() const{
 
 std::string my::Settings::getNegativFolder() const{
     return m_negativFolder;
+}
+
+
+cv::Size my::Settings::getHogImageSize() const{
+    return m_imgSize;
+}
+
+cv::Size my::Settings::getHogCellSize() const{
+    return m_cellSize;
+}
+
+
+cv::Size my::Settings::getHogBlockSize() const{
+    return m_blockSize;
+}
+
+uint my::Settings::getHogNrBins() const{
+    return m_nrBins;
 }

@@ -1,15 +1,15 @@
 {
     "inputImage":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/00003.ppm",
-    "stopFolder":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/14/",
+    "stopFolder":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/",
     "negativFolder":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/",
 
 
     "ColorFilter":{
         "blueInferiorLimit":[98,109,20],
         "blueSuperiorLimit":[132,255,255],
-        "red1InferiorLimit":[0,70,20],
+        "red1InferiorLimit":[0,100,20],
         "red1SuperiorLimit":[20,255,255],
-        "red2InferiorLimit":[160,70,20],
+        "red2InferiorLimit":[160,100,20],
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{
@@ -25,7 +25,15 @@
         "kernelSize":1,
         "InferiorSquareRate":0.8,
         "SuperiorSquareRate":1.2
+    },
+
+    "hogParams":{
+        "imageSize":[64,64],
+        "cellSize":[4,4],
+        "blockSize":[2,2],
+        "nrBins":9
     }
+
 
     
 
