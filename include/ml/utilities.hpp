@@ -38,11 +38,14 @@ namespace my{
 
     
     void testSVMBigFrame(           const std::string&
-                                    ,const std::string&);
+                                    ,const std::string&
+                                    ,my::ColorFilter&
+                                    ,my::ImageSegment&
+                                    ,my::HogCalculation&);
 
     void readFromFolderImages(const std::string &,std::vector<cv::Mat>&);
 
-    
+    void drawRenctangles(cv::Mat &, std::vector<my::ImageSegment::Segment_t>, std::vector<my::ImageSegment::Segment_t>, std::vector<my::ImageSegment::Segment_t>);
 };
 
 #include "utilities.inl"
