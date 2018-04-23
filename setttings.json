@@ -1,15 +1,19 @@
 {
-    "inputImage":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/00003.ppm",
-    "stopFolder":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/",
-    "negativFolder":"C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/02/",
+    "inputImage":"/home/nandi/Workspaces/git/resource/02/00003.ppm",
+    "stopSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/StopSign/",
+    "parkingSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSign/",
+    "negativTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/NegativTrain/",
+    "stopSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/StopSignTest/",
+    "parkingSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSignTest/",
+    "negativTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/NegativTest/",
 
 
     "ColorFilter":{
         "blueInferiorLimit":[98,109,20],
         "blueSuperiorLimit":[132,255,255],
-        "red1InferiorLimit":[0,100,20],
+        "red1InferiorLimit":[0,20,20],
         "red1SuperiorLimit":[20,255,255],
-        "red2InferiorLimit":[160,100,20],
+        "red2InferiorLimit":[160,20,20],
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{

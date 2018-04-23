@@ -20,6 +20,10 @@ namespace my{
         Settings(const std::string&,
                 const std::string&,
                 const std::string&,
+                const std::string&,
+                const std::string&,
+                const std::string&,
+                const std::string&,
                 const ::cv::Vec3b&,
                 const ::cv::Vec3b&,
                 const ::cv::Vec3b&,
@@ -62,8 +66,14 @@ namespace my{
         double getInferiorSquareRate() const;
         double getSuperiorSquareRate() const;
         std::string getImageName() const;
-        std::string getStopFolder() const;
-        std::string getNegativFolder() const;
+        
+        std::string getStopTrainFolder() const;
+        std::string getParkingTrainFolder() const;
+        std::string getNegativTrainFolder() const;
+        std::string getStopTestFolder() const;
+        std::string getParkingTestFolder() const;
+        std::string getNegativTestFolder() const;
+
 
         cv::Size getHogImageSize() const;
         cv::Size getHogCellSize() const;
@@ -75,8 +85,14 @@ namespace my{
 
         //----------------------------------------------------
         std::string m_image;
-        std::string m_stopSignFolder;
-        std::string m_negativFolder;
+        // Train folders
+        std::string m_stopSignTrainFolder;
+        std::string m_parkingSignTrainFolder;
+        std::string m_negativTrainFolder;
+        // Test folders
+        std::string m_stopSignTestFolder;
+        std::string m_parkingSignTestFolder;
+        std::string m_negativTestFolder;
         //----------------------------------------------------
         //              Limits parameters
         ::cv::Vec3b m_blueInferior;

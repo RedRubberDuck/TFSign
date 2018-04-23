@@ -4,8 +4,14 @@
 
 my::Settings::Settings(
                 const std::string&                      f_image    
-                ,const std::string&                     f_stopSignFolder    
-                ,const std::string&                     f_negativFolder
+                ,const std::string&                     f_stopSignTrainFolder    
+                ,const std::string&                     f_parkingSignTrainFolder
+                ,const std::string&                     f_negativTrainFolder
+                
+                ,const std::string&                     f_stopSignTestFolder    
+                ,const std::string&                     f_parkingSignTestFolder
+                ,const std::string&                     f_negativTestFolder
+
                 ,const ::cv::Vec3b&                     f_blueInferior
                 ,const ::cv::Vec3b&                     f_blueSuperior
                 ,const ::cv::Vec3b&                     f_red1Inferior
@@ -25,8 +31,12 @@ my::Settings::Settings(
                 ,const cv::Size&                        f_blockSize
                 ,const uint&                            f_nrBins)
     :m_image(f_image)
-    ,m_stopSignFolder(f_stopSignFolder)
-    ,m_negativFolder(f_negativFolder)
+    ,m_stopSignTrainFolder(f_stopSignTrainFolder)
+    ,m_parkingSignTrainFolder(f_parkingSignTrainFolder)
+    ,m_negativTrainFolder(f_negativTrainFolder)
+    ,m_stopSignTestFolder(f_stopSignTestFolder)
+    ,m_parkingSignTestFolder(f_parkingSignTestFolder)
+    ,m_negativTestFolder(f_negativTestFolder)
     ,m_blueInferior(f_blueInferior)
     ,m_blueSuperior(f_blueSuperior)
     ,m_red1Inferior(f_red1Inferior)
@@ -73,8 +83,14 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     my::Settings::setLimit(l_red2Sup,l_colorFilter["red2SuperiorLimit"]);
 
     std::string l_img = doc["inputImage"].GetString();
-    std::string l_stopFolder = doc["stopFolder"].GetString();
-    std::string l_negativFolder = doc["negativFolder"].GetString();
+    // Train folders
+    std::string l_stopTrainFolder = doc["stopSignTrainFolder"].GetString();
+    std::string l_negativTrainFolder = doc["negativTrainFolder"].GetString();
+    std::string l_parkingTrainFolder = doc["parkingSignTrainFolder"].GetString();
+    // Test folders
+    std::string l_stopTestFolder = doc["stopSignTestFolder"].GetString();
+    std::string l_negativTestFolder = doc["negativTestFolder"].GetString();
+    std::string l_parkingTestFolder = doc["parkingSignTestFolder"].GetString();
 
     std::cout << "Img" << l_img << std::endl;
 
@@ -119,8 +135,12 @@ my::Settings my::Settings::readFile(const std::string& fileName){
 
 
     my::Settings l_settings(    l_img
-                                ,l_stopFolder
-                                ,l_negativFolder
+                                ,l_stopTrainFolder
+                                ,l_parkingTrainFolder
+                                ,l_negativTrainFolder
+                                ,l_stopTestFolder
+                                ,l_parkingTestFolder
+                                ,l_negativTestFolder
                                 ,l_blueInfCv
                                 ,l_blueSupCv
                                 ,l_red1Inf
@@ -212,13 +232,22 @@ std::string my::Settings::getImageName() const{
     return m_image;
 }
 
-std::string my::Settings::getStopFolder() const{
-    return m_stopSignFolder;
+std::string my::Settings::getStopTrainFolder() const{
+    return m_stopSignTrainFolder;
 }
 
-std::string my::Settings::getNegativFolder() const{
-    return m_negativFolder;
+std::string my::Settings::getParkingTrainFolder() const{
+    return m_parkingSignTrainFolder;
 }
+
+std::string my::Settings::getNegativTrainFolder() const{
+    return m_negativTrainFolder;
+}
+
+
+std::string my::Settings::getStopTestFolder() const{ return m_stopSignTestFolder;}
+std::string my::Settings::getParkingTestFolder() const{ return m_parkingSignTestFolder;}
+std::string my::Settings::getNegativTestFolder() const{ return m_negativTestFolder;}
 
 
 cv::Size my::Settings::getHogImageSize() const{
