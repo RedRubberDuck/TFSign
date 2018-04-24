@@ -10,10 +10,10 @@
 
     "ColorFilter":{
         "blueInferiorLimit":[98,109,20],
-        "blueSuperiorLimit":[122,255,255],
+        "blueSuperiorLimit":[132,255,255],
         "red1InferiorLimit":[0,100,20],
         "red1SuperiorLimit":[10,255,255],
-        "red2InferiorLimit":[170,100,20],
+        "red2InferiorLimit":[160,100,20],
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{
@@ -27,8 +27,8 @@
     "ImageSegment":{
         "GradiantType":0,
         "kernelSize":1,
-        "InferiorSquareRate":0.35,
-        "SuperiorSquareRate":1.05
+        "InferiorSquareRate":0.4,
+        "SuperiorSquareRate":1.5
     },
 
     "hogParams":{

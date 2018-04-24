@@ -75,7 +75,7 @@ void my::ImageSegment::segmentProc(     const uint&                             
         double l_rate = (double)width/height;
         uint l_size = width * height;
         
-        if ( (m_InferiorRate < l_rate && l_rate < m_SuperiorRate) && (l_size>60*60) ){
+        if ( (m_InferiorRate < l_rate && l_rate < m_SuperiorRate) && (l_size>40*40) ){
             my::ImageSegment::Segment_t l_segment;
             l_segment.color = f_color;
             l_segment.left = left;

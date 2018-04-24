@@ -50,7 +50,7 @@ void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
 int main(int argc, char** argv )
 {
     // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
-    std::string l_str = "..\\setttingsWin.json";
+    std::string l_str = "../setttings.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
     my::Settings l_settings = my::Settings::readFile(l_str); 
 
@@ -66,13 +66,13 @@ int main(int argc, char** argv )
                                                 ,l_settings.getStopTrainFolder()
                                                 ,l_settings.getNegativTrainFolder()});
     std::array<std::string,3> l_dataTrainFile({"parkingTrainData","stopTrainData","negativTrainData"});
-    // my::readAndSaveFeatures<3>(l_trainFolders,l_dataTrainFile,l_colorFilter,l_segment,l_hog);
+    my::readAndSaveFeatures<3>(l_trainFolders,l_dataTrainFile,l_colorFilter,l_segment,l_hog);
     // ---------------------------------------------------------------------------------------------------------------
     std::array<std::string,3> l_testFolders({  l_settings.getParkingTestFolder()
                                                 ,l_settings.getStopTestFolder()
                                                 ,l_settings.getNegativTestFolder()});
     std::array<std::string,3> l_dataTestFile({"parkingTestData","stopTestData","negativTestData"});
-    // my::readAndSaveFeatures<3>(l_testFolders,l_dataTestFile,l_colorFilter,l_segment,l_hog);
+    my::readAndSaveFeatures<3>(l_testFolders,l_dataTestFile,l_colorFilter,l_segment,l_hog);
 
     std::cout<<"Train"<<l_settings.getStopTrainFolder()<<std::endl;
     std::cout<<"Test"<<l_settings.getStopTestFolder()<<std::endl;
@@ -82,10 +82,10 @@ int main(int argc, char** argv )
     std::cout<<"Test"<<l_settings.getNegativTestFolder()<<std::endl;
 
     
-    // my::readAndTrainSVM<3>(l_dataTrainFile,"svm.xml");
-    // my::testSVM<3>(l_dataTestFile,"svm.xml");
-    
-    my::testSVMBigFrame("C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/TFSign/fullFrame/","svm.xml",l_colorFilter,l_segment,l_hog);
+    my::readAndTrainSVM<3>(l_dataTrainFile,"svm3.xml");
+    my::testSVM<3>(l_dataTestFile,"svm3.xml");
+    // C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/TFSign/fullFrame/
+    my::testSVMBigFrame("/home/nandi/Workspaces/git/resource/TFSign/fullFrame/","svm3.xml",l_colorFilter,l_segment,l_hog);
 
 
 

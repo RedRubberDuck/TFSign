@@ -30,8 +30,8 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
                 
                 cv::Range l_x(it->left,it->left+it->width);
                 cv::Range l_y(it->top,it->top+it->height);
-                cv::Mat l_sign;
-                cv::resize(l_imgresized(l_y,l_x),l_sign,cv::Size(64,64));
+                cv::Mat l_sign=l_imgresized(l_y,l_x);
+                // cv::resize(,l_sign,cv::Size(64,64));
                 
                 std::vector<float> l_descriptors;
                 

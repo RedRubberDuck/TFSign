@@ -17,6 +17,7 @@ namespace my{
 
           private:
             cv::HOGDescriptor m_hog;
+            cv::Size          m_imgSize;
     };
 
 };
