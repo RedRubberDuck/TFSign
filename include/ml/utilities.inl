@@ -20,6 +20,7 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
         
         for (itImg = l_imgContainer.begin(); itImg!=l_imgContainer.end() ;++itImg){
             cv::Mat l_imgresized;
+            std::cout << "Img.src size:" << (*itImg).size() << std::endl;
             cv::resize((*itImg), l_imgresized, cv::Size(100, 100));
             my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
             std::vector<my::ImageSegment::Segment_t> l_segments;
@@ -35,8 +36,8 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
                 
                 std::vector<float> l_descriptors;
                 
-                // cv::imshow(" ",l_sign);
-                // cv::waitKey();
+                cv::imshow(" ",l_sign);
+                cv::waitKey();
                 f_hogCalc.apply(l_sign,l_descriptors);
                 l_collectionDescriptors.push_back(l_descriptors);
             }

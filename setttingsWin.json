@@ -1,19 +1,19 @@
 {
     "inputImage":"/home/nandi/Workspaces/git/resource/02/00003.ppm",
-    "stopSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSign",
-    "parkingSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\Belga\\parkingSign",
-    "negativTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTrain",
-    "stopSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSignTest",
-    "parkingSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\Belga\\parkingSignTest",
-    "negativTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTest",
+    "stopSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSign\\",
+    "parkingSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\parkingSign\\",
+    "negativTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTrain\\",
+    "stopSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSignTest\\",
+    "parkingSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\Belga\\parkingSignTest\\",
+    "negativTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTest\\",
 
 
     "ColorFilter":{
         "blueInferiorLimit":[98,109,20],
-        "blueSuperiorLimit":[132,255,255],
-        "red1InferiorLimit":[0,20,20],
-        "red1SuperiorLimit":[20,255,255],
-        "red2InferiorLimit":[160,20,20],
+        "blueSuperiorLimit":[122,255,255],
+        "red1InferiorLimit":[0,100,20],
+        "red1SuperiorLimit":[10,255,255],
+        "red2InferiorLimit":[170,100,20],
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{
@@ -27,14 +27,14 @@
     "ImageSegment":{
         "GradiantType":0,
         "kernelSize":1,
-        "InferiorSquareRate":0.4,
-        "SuperiorSquareRate":1.5
+        "InferiorSquareRate":0.35,
+        "SuperiorSquareRate":1.05
     },
 
     "hogParams":{
         "imageSize":[64,64],
         "cellSize":[4,4],
-        "blockSize":[2,2],
+        "blockSize":[4,4],
         "nrBins":9
     }
 
