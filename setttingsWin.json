@@ -1,11 +1,11 @@
 {
     "inputImage":"/home/nandi/Workspaces/git/resource/02/00003.ppm",
-    "stopSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSign\\",
-    "parkingSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\parkingSign\\",
-    "negativTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTrain\\",
-    "stopSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\StopSignTest\\",
-    "parkingSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\Belga\\parkingSignTest\\",
-    "negativTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\TFSign\\German\\NegativTest\\",
+    "stopSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\stopSign\\",
+    "parkingSignTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\parkingSign\\",
+    "negativTrainFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\negativ\\",
+    "stopSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\stopSignTest\\",
+    "parkingSignTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\parkingSignTest\\",
+    "negativTestFolder":"C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\TrainAndTest\\negativTest\\",
 
 
     "ColorFilter":{
