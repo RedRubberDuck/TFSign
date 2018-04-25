@@ -17,16 +17,17 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
         std::vector<cv::Mat>::const_iterator itImg;
         std::cout << "Nr img.:" << l_imgContainer.size() << std::endl;
         std::vector<std::vector<float>> l_collectionDescriptors;
-        
+        long imgIndex=0;
         for (itImg = l_imgContainer.begin(); itImg!=l_imgContainer.end() ;++itImg){
-            cv::Mat l_imgresized;
+            cv::Mat l_imgresized=(*itImg);
             std::cout << "Img.src size:" << (*itImg).size() << std::endl;
-            cv::resize((*itImg), l_imgresized, cv::Size(100, 100));
+            // cv::resize((*itImg), l_imgresized, cv::Size(100, 100));
             my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
             std::vector<my::ImageSegment::Segment_t> l_segments;
             l_segments.clear();
             f_segmenting.apply(l_FilteredImg.blueMask,l_FilteredImg.redMask,l_segments);
             std::vector<my::ImageSegment::Segment_t>::iterator it;
+
             for (it = l_segments.begin(); it!=l_segments.end();++it){
                 
                 cv::Range l_x(it->left,it->left+it->width);
@@ -36,8 +37,14 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
                 
                 std::vector<float> l_descriptors;
                 
-                cv::imshow(" ",l_sign);
-                cv::waitKey();
+                // cv::imshow(" ",l_sign);
+                // cv::waitKey();
+                std::ostringstream s;
+                s<<"/home/nandi/Workspaces/git/resource/TFSign/Video/stopSignCrop/"<<"pics"<<imgIndex<<".jpg";
+                std::string picsName(s.str());
+                cv::imwrite(picsName.c_str(),l_sign);
+                ++imgIndex;
+
                 f_hogCalc.apply(l_sign,l_descriptors);
                 l_collectionDescriptors.push_back(l_descriptors);
             }

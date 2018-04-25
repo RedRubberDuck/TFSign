@@ -1,7 +1,8 @@
 {
     "inputImage":"/home/nandi/Workspaces/git/resource/02/00003.ppm",
-    "stopSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/StopSign/",
-    "parkingSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSign/",
+    
+    "stopSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/stopSign/",
+    "parkingSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/parkingSign/",
     "negativTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/NegativTrain/",
     "stopSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/German/StopSignTest/",
     "parkingSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSignTest/",
@@ -10,7 +11,7 @@
 
     "ColorFilter":{
         "blueInferiorLimit":[98,109,20],
-        "blueSuperiorLimit":[122,255,255],
+        "blueSuperiorLimit":[132,255,255],
         "red1InferiorLimit":[0,100,20],
         "red1SuperiorLimit":[10,255,255],
         "red2InferiorLimit":[170,100,20],
@@ -28,7 +29,7 @@
         "GradiantType":0,
         "kernelSize":1,
         "InferiorSquareRate":0.35,
-        "SuperiorSquareRate":1.05
+        "SuperiorSquareRate":1.15
     },
 
     "hogParams":{
@@ -36,9 +37,9 @@
         "cellSize":[4,4],
         "blockSize":[4,4],
         "nrBins":9
-    }
+    },
 
-
+    "delss":["/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSign/","/home/nandi/Workspaces/git/resource/TFSign/German/StopSign/"]
     
 
 }
