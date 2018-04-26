@@ -112,3 +112,61 @@ void my::drawRenctangles(   cv::Mat&                                        f_im
         // cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
     }
 }
+
+
+
+void my::testVideo(     const std::string&              f_folderPath
+                        ,const std::string&             f_svmFileName
+                        ,my::ColorFilter&               f_colorFilter
+                        ,my::ImageSegment&              f_segmenting
+                        ,my::HogCalculation&            f_hogCalc
+                        ){
+    DIR *dir  =opendir(f_folderPath.c_str());
+    std::vector<std::string> l_VideoFiles;
+    // --------------------------------------------------------------------------------------------------------------------------
+    if(dir){
+        struct dirent *ent;
+        while((ent = readdir(dir)) !=NULL){
+            std::string l_fileName = ent->d_name;
+            
+            std::string l_fileExtension = l_fileName.substr(l_fileName.find_last_of(".") + 1);
+            if(l_fileExtension == "h264"){
+                // std::cout << ent->d_name << std::endl;
+                std::string l_fullpath = f_folderPath;
+                l_fullpath.append(l_fileName);
+                l_VideoFiles.push_back(l_fullpath);
+            }
+        }
+    }
+    // --------------------------------------------------------------------------------------------------------------------------
+    if(l_VideoFiles.size()==0){
+        std::cout<<"Cannot find any video file.";
+        return;
+    }
+
+    my::TrafficSignProcessing l_trafficProcessing(f_colorFilter,f_segmenting,f_hogCalc,f_svmFileName);
+    std::vector<std::string>::iterator it;
+    
+    for (it=l_VideoFiles.begin(); it<l_VideoFiles.end(); ++it){
+        std::cout<<"File:"<<(*it)<<std::endl;
+        cv::VideoCapture l_videoCapture((*it));
+        if(!l_videoCapture.isOpened()){
+            std::cout<<"Cannot open the file!"<<std::endl;
+            continue;
+        }
+
+        cv::Mat l_frame;
+        while(true){
+            l_videoCapture>>l_frame;
+            if(l_frame.empty()) break;
+            l_trafficProcessing.processFrameAndDraw(l_frame);
+
+
+            cv::imshow("Video",l_frame);
+            char c=(char)cv::waitKey(25);
+            if(c==27)
+            break;
+        }
+    
+    }
+}

@@ -20,6 +20,8 @@
 #include <sstream>
 #include <dirent.h>
 
+#include <ml/processing.hpp>
+
 namespace my{
     template<uint N>
     void readAndSaveFeatures(       std::array<std::string,N>&
@@ -46,6 +48,12 @@ namespace my{
     void readFromFolderImages(const std::string &,std::vector<cv::Mat>&);
 
     void drawRenctangles(cv::Mat &, std::vector<my::ImageSegment::Segment_t>, std::vector<my::ImageSegment::Segment_t>, std::vector<my::ImageSegment::Segment_t>);
+
+    void testVideo( const std::string&
+                    ,const std::string&
+                    ,my::ColorFilter&
+                    ,my::ImageSegment&
+                    ,my::HogCalculation& );
 };
 
 #include "utilities.inl"

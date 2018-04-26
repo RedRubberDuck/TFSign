@@ -12,11 +12,12 @@ import videoProc
 def main():
     # source folder
     inputFolder = os.path.realpath(
-        'C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\')
+        "/home/nandi/Workspaces/git/resource/TFSign/Video/InitialVideo/")
+        # 'C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\'
     # source file
 
-    inputFileName = '\\stop.h264'
-    outputSubFolder = '\\stopSign'
+    inputFileName = '/ParkingVid1.h264'
+    outputSubFolder = '/ParkingVid1/'
 
     print('Processing:', inputFolder+inputFileName)
     # Video frame reader object
@@ -29,7 +30,7 @@ def main():
 
         cv2.imshow('', frame)
         cv2.imwrite(inputFolder+outputSubFolder +
-                    "\\pics"+str(index)+".jpg", frame)
+                    "picsPark"+str(index)+".jpg", frame)
         if cv2.waitKey() & 0xFF == ord('q'):
             break
 
