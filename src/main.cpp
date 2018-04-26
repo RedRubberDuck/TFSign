@@ -49,8 +49,8 @@ void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
 
 int main(int argc, char** argv )
 {
-    std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
-    // std::string l_str = "..\\setttingsWin.json";
+    // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    std::string l_str = "..\\setttingsWin.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
     my::Settings l_settings = my::Settings::readFile(l_str); 
 
@@ -93,7 +93,8 @@ int main(int argc, char** argv )
     // /home/nandi/Workspaces/git/resource/TFSign/fullFrame/
     // C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/Video/TrainAndTest/fullframe/
     // my::testSVMBigFrame("/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/fullframe/","svm4.xml",l_colorFilter,l_segment,l_hog);
-    my::testVideo("/home/nandi/Workspaces/git/resource/TFSign/Video/InitialVideo/","svm4.xml",l_colorFilter,l_segment,l_hog);
+    // /home/nandi/Workspaces/git/resource/TFSign/Video/InitialVideo/
+    my::testVideo("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\InitialVideo\\","svm4.xml",l_colorFilter,l_segment,l_hog);
 
     // "negativFolder":"/home/nandi/Workspaces/git/resource/positivStopTest/",
     // "negativFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/00045/",
