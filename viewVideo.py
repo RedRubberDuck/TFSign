@@ -16,8 +16,8 @@ def main():
         # 'C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\'
     # source file
 
-    inputFileName = '/ParkingVid1.h264'
-    outputSubFolder = '/ParkingVid1/'
+    inputFileName = '/StopVid2.h264'
+    outputSubFolder = '/StopVid/'
 
     print('Processing:', inputFolder+inputFileName)
     # Video frame reader object
@@ -30,7 +30,7 @@ def main():
 
         cv2.imshow('', frame)
         cv2.imwrite(inputFolder+outputSubFolder +
-                    "picsPark"+str(index)+".jpg", frame)
+                    "picsStop"+str(index)+".jpg", frame)
         if cv2.waitKey() & 0xFF == ord('q'):
             break
 

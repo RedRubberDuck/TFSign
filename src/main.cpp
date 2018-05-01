@@ -49,8 +49,8 @@ void drawSquare(    std::vector<my::ImageSegment::Segment_t>&   f_segments,
 
 int main(int argc, char** argv )
 {
-    // std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
-    std::string l_str = "..\\setttingsWin.json";
+    std::string l_str = "/home/nandi/Workspaces/git/TFSign/setttings.json";
+    // std::string l_str = "..\\setttingsWin.json";
     std::cout<<"Settings file:"<<l_str<<std::endl;
     my::Settings l_settings = my::Settings::readFile(l_str); 
 
@@ -84,17 +84,19 @@ int main(int argc, char** argv )
     std::cout<<"Train"<<l_settings.getNegativTrainFolder()<<std::endl;
     std::cout<<"Test"<<l_settings.getNegativTestFolder()<<std::endl;
 
-    // my::readAndSaveFeatures<3>(l_trainFolders,l_dataTrainFile,l_colorFilter,l_segment,l_hog);
-    // my::readAndSaveFeatures<3>(l_testFolders,l_dataTestFile,l_colorFilter,l_segment,l_hog);
+    my::readAndSaveFeatures<3>(l_trainFolders,l_dataTrainFile,l_colorFilter,l_segment,l_hog);
+    my::readAndSaveFeatures<3>(l_testFolders,l_dataTestFile,l_colorFilter,l_segment,l_hog);
     
-    // my::readAndTrainSVM<3>(l_dataTrainFile,"svm4.xml");
-    // my::testSVM<3>(l_dataTestFile,"svm4.xml");
+    my::readAndTrainSVM<3>(l_dataTrainFile,"svm6.xml");
+    my::testSVM<3>(l_dataTestFile,"svm6.xml");
     // C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/TFSign/fullFrame/
     // /home/nandi/Workspaces/git/resource/TFSign/fullFrame/
     // C:/Users/aki5clj/Documents/Git/WorkspaceC_C++/resource/Video/TrainAndTest/fullframe/
     // my::testSVMBigFrame("/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/fullframe/","svm4.xml",l_colorFilter,l_segment,l_hog);
     // /home/nandi/Workspaces/git/resource/TFSign/Video/InitialVideo/
-    my::testVideo("C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\InitialVideo\\","svm4.xml",l_colorFilter,l_segment,l_hog);
+    // C:\\Users\\aki5clj\\Documents\\Git\\WorkspaceC_C++\\resource\\Video\\InitialVideo
+
+    my::testVideo("/home/nandi/Workspaces/git/resource/TFSign/Video/InitialVideo/","svm6.xml",l_colorFilter,l_segment,l_hog);
 
     // "negativFolder":"/home/nandi/Workspaces/git/resource/positivStopTest/",
     // "negativFolder":"/home/nandi/Workspaces/git/resource/TFSign/Belga/00045/",

@@ -15,13 +15,38 @@
 namespace my{
     class TrafficSignProcessing{
         public:
+            typedef enum{
+                None=0,StopSign,ParkingSign
+            }TrafficSignTypes_t;
+
+            class TrafficSignSegment{
+                public:
+                    uint left,top,width,height;
+                    TrafficSignTypes_t signType;
+                
+                bool operator==(TrafficSignSegment const& x) const {return (signType==x.signType 
+                                                                            && left==x.left
+                                                                            && top==x.top
+                                                                            && width==x.width
+                                                                            && height==x.height);}
+                
+                bool operator!=(TrafficSignSegment const& x) const {return (signType!=x.signType 
+                                                                            || left!=x.left
+                                                                            || top!=x.top
+                                                                            || width!=x.width
+                                                                            || height!=x.height);}                               
+            };         
+            
             TrafficSignProcessing(  const my::ColorFilter&
                                     ,const my::ImageSegment&
                                     ,const my::HogCalculation&
                                     ,const std::string&);
+            TrafficSignProcessing(const  my::Settings&); 
 
 
-            void processFrameAndDraw(cv::Mat&);
+            void processFrame(cv::Mat,std::vector<TrafficSignSegment>&);
+            void processFrameAndDraw(cv::Mat);
+
         private:
             my::ColorFilter         m_colorFilter;
             my::ImageSegment        m_imgSegmenting;

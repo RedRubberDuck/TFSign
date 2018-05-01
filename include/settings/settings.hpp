@@ -17,6 +17,7 @@
 namespace my{
     class Settings{
         public:
+        Settings();
         Settings(const std::string&,
                 const std::string&,
                 const std::string&,
@@ -41,7 +42,8 @@ namespace my{
                 const cv::Size&,
                 const cv::Size&,
                 const cv::Size&,
-                const uint&);
+                const uint&,
+                const std::string&);
 
         static Settings readFile(const std::string&);
         static void setLimit(cv::Vec3b&, const rapidjson::Value&);
@@ -79,6 +81,8 @@ namespace my{
         cv::Size getHogCellSize() const;
         cv::Size getHogBlockSize() const;
         uint getHogNrBins() const;
+
+        std::string getSvmFile() const;
 
       private:
 
@@ -119,6 +123,9 @@ namespace my{
         cv::Size m_cellSize;
         cv::Size m_blockSize;
         uint m_nrBins;
+        //----------------------------------------------------
+        //      SVM parameters
+        std::string m_svmXmlFile;
 
     };
 

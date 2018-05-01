@@ -9,11 +9,11 @@
 
 
     "ColorFilter":{
-        "blueInferiorLimit":[98,109,20],
-        "blueSuperiorLimit":[122,255,255],
-        "red1InferiorLimit":[0,100,20],
-        "red1SuperiorLimit":[10,255,255],
-        "red2InferiorLimit":[170,100,20],
+        "blueInferiorLimit":[90,100,20],
+        "blueSuperiorLimit":[132,255,255],
+        "red1InferiorLimit":[0,100,40],
+        "red1SuperiorLimit":[15,255,255],
+        "red2InferiorLimit":[165,100,40],
         "red2SuperiorLimit":[180,255,255]
     },
     "dilation":{
@@ -28,16 +28,17 @@
         "GradiantType":0,
         "kernelSize":1,
         "InferiorSquareRate":0.35,
-        "SuperiorSquareRate":1.15
+        "SuperiorSquareRate":1.25
     },
 
     "hogParams":{
-        "imageSize":[64,64],
+        "imageSize":[32,32],
         "cellSize":[4,4],
-        "blockSize":[4,4],
+        "blockSize":[2,2],
         "nrBins":9
     },
 
+    "svmXml":"svm4.xml",
     "delss":["/home/nandi/Workspaces/git/resource/TFSign/Belga/parkingSign/","/home/nandi/Workspaces/git/resource/TFSign/German/StopSign/"]
     
 

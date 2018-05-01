@@ -22,20 +22,20 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
             cv::Mat l_imgresized=(*itImg);
             // std::cout << "Img.src size:" << (*itImg).size() << std::endl;
             // cv::resize((*itImg), l_imgresized, cv::Size(100, 100));
-            my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
-            std::vector<my::ImageSegment::Segment_t> l_segments;
-            l_segments.clear();
-            f_segmenting.apply(l_FilteredImg.blueMask,l_FilteredImg.redMask,l_segments);
-            std::vector<my::ImageSegment::Segment_t>::iterator it;
+            // my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
+            // std::vector<my::ImageSegment::Segment_t> l_segments;
+            // l_segments.clear();
+            // f_segmenting.apply(l_FilteredImg.blueMask,l_FilteredImg.redMask,l_segments);
+            // std::vector<my::ImageSegment::Segment_t>::iterator it;
 
-            for (it = l_segments.begin(); it!=l_segments.end();++it){
+            // for (it = l_segments.begin(); it!=l_segments.end();++it){
                 
-                cv::Range l_x(it->left,it->left+it->width);
-                cv::Range l_y(it->top,it->top+it->height);
-                cv::Mat l_sign=l_imgresized(l_y,l_x);
+            //     cv::Range l_x(it->left,it->left+it->width);
+            //     cv::Range l_y(it->top,it->top+it->height);
+            //     cv::Mat l_sign=l_imgresized(l_y,l_x);
                 // cv::resize(,l_sign,cv::Size(64,64));
                 
-                std::vector<float> l_descriptors;
+            std::vector<float> l_descriptors;
                 
                 // cv::imshow(" ",l_sign);
                 // cv::waitKey();
@@ -45,9 +45,9 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
                 // cv::imwrite(picsName.c_str(),l_sign);
                 // ++imgIndex;
 
-                f_hogCalc.apply(l_sign,l_descriptors);
-                l_collectionDescriptors.push_back(l_descriptors);
-            }
+            f_hogCalc.apply(l_imgresized,l_descriptors);
+            l_collectionDescriptors.push_back(l_descriptors);
+            // }
         }
         my::DescriptionSaver l_saver(l_outputFileName);
         l_saver.saveDescription(l_collectionDescriptors);
@@ -93,8 +93,8 @@ void my::readAndTrainSVM(           const std::array<std::string,N>&          f_
 
     cv::Ptr<cv::ml::SVM> svm = cv::ml::SVM::create();
     svm->setType(cv::ml::SVM::C_SVC);
-    svm->setKernel(cv::ml::SVM::LINEAR);
-    svm->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 100, 1e-6));
+    svm->setKernel(cv::ml::SVM::INTER);
+    svm->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 500, 1e-6));
 
 
     std::cout<<l_samples.size()<<" "<<l_responses.size();

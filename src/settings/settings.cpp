@@ -1,6 +1,9 @@
 #include <settings/settings.hpp>
 
 
+my::Settings::Settings(){
+    
+}
 
 my::Settings::Settings(
                 const std::string&                      f_image    
@@ -29,7 +32,8 @@ my::Settings::Settings(
                 ,const cv::Size&                        f_imgSize
                 ,const cv::Size&                        f_cellSize
                 ,const cv::Size&                        f_blockSize
-                ,const uint&                            f_nrBins)
+                ,const uint&                            f_nrBins
+                ,const std::string&                     f_svmXmlFile)
     :m_image(f_image)
     ,m_stopSignTrainFolder(f_stopSignTrainFolder)
     ,m_parkingSignTrainFolder(f_parkingSignTrainFolder)
@@ -55,6 +59,7 @@ my::Settings::Settings(
     ,m_cellSize(f_cellSize)
     ,m_blockSize(f_blockSize)
     ,m_nrBins(f_nrBins)
+    ,m_svmXmlFile(f_svmXmlFile)
 {}
 
 
@@ -131,7 +136,11 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     cv::Size l_cellSize(l_hogPrameters["cellSize"][0].GetInt(),l_hogPrameters["cellSize"][1].GetInt());
     cv::Size l_blockSize(l_hogPrameters["blockSize"][0].GetInt()*l_cellSize.width,l_hogPrameters["blockSize"][1].GetInt()*l_cellSize.height);
     uint l_nrBins = l_hogPrameters["nrBins"].GetInt();
-    
+
+    // ------------------------------------------------------------------
+    // SVM 
+    std::string l_svmFile = doc["svmXml"].GetString();
+
 
 
     my::Settings l_settings(    l_img
@@ -158,7 +167,8 @@ my::Settings my::Settings::readFile(const std::string& fileName){
                                 ,l_imgSize
                                 ,l_cellSize
                                 ,l_blockSize
-                                ,l_nrBins);
+                                ,l_nrBins
+                                ,l_svmFile);
     return l_settings;
 }
 
@@ -266,3 +276,6 @@ cv::Size my::Settings::getHogBlockSize() const{
 uint my::Settings::getHogNrBins() const{
     return m_nrBins;
 }
+
+
+std::string my::Settings::getSvmFile() const {return m_svmXmlFile;}

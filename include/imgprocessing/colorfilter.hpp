@@ -13,6 +13,11 @@ namespace my{
                 ::cv::Mat blueMask;
                 ::cv::Mat redMask;
                 ::cv::Mat Mask;
+
+                cv::Mat getBlueMask(){return blueMask;}
+                cv::Mat getRedMask(){return redMask;}
+                cv::Mat getMask(){return Mask;}
+
             }ColorFilter_Data;
 
 

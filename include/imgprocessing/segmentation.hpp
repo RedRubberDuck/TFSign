@@ -19,18 +19,33 @@ namespace my{
                 BLUE=0,RED,None
             }ColorTypes_t;
 
-            typedef struct{
+            class Segment_t{
+                public:
                 ColorTypes_t color;
                 uint left,top;
                 uint width,height;
-            }Segment_t;
+
+
+                bool operator==(Segment_t const& x) const { return (color == x.color
+                                                                     && left == x.left 
+                                                                     && top == x.top 
+                                                                     && width == x.width
+                                                                     && height == x.height); }
+                bool operator!=(Segment_t const& x) const { return (color != x.color
+                                                                     || left != x.left 
+                                                                     || top != x.top 
+                                                                     || width != x.width
+                                                                     || height != x.height); }
+            };
+
+            typedef std::vector<Segment_t>& SegmentVector_t;
 
             ImageSegment(const my::Settings&);
             ImageSegment(const ImgSegGradType_t&,const uint&);
             
             void apply(                 const cv::Mat&
                                         ,const cv::Mat&
-                                        ,std::vector<Segment_t>&);
+                                        ,SegmentVector_t);
             
             void applyColor(             const cv::Mat&
                                         ,const ColorTypes_t&

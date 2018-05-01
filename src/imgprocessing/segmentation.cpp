@@ -25,7 +25,9 @@ my::ImageSegment::ImageSegment( const my::Settings&     f_settings)
 
 void my::ImageSegment::apply(       const ::cv::Mat&                                        f_blueMask
                                     ,const ::cv::Mat&                                       f_redMask
-                                    ,std::vector<::my::ImageSegment::Segment_t>&            f_segments){
+                                    ,my::ImageSegment::SegmentVector_t                      f_segments
+                                    // ,std::vector<::my::ImageSegment::Segment_t>&            f_segments
+                                    ){
     // std::cout<<"Nr segments:"<<f_segments.size()<<std::endl;
     applyColor(f_blueMask,::my::ImageSegment::ColorTypes_t::BLUE,f_segments);
     applyColor(f_redMask,::my::ImageSegment::ColorTypes_t::RED,f_segments);
