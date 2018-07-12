@@ -96,9 +96,7 @@ my::Settings my::Settings::readFile(const std::string& fileName){
     std::string l_stopTestFolder = doc["stopSignTestFolder"].GetString();
     std::string l_negativTestFolder = doc["negativTestFolder"].GetString();
     std::string l_parkingTestFolder = doc["parkingSignTestFolder"].GetString();
-
-    std::cout << "Img" << l_img << std::endl;
-
+    
     rapidjson::Value& l_dilationJson = doc["dilation"];
     uint l_dilationSize = l_dilationJson["size"].GetInt();
     bool l_dilationApply = l_dilationJson["apply"].GetBool();

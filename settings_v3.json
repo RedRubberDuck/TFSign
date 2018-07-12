@@ -1,0 +1,41 @@
+{
+    "inputImage":"/home/nandi/Workspaces/git/resource/02/00003.ppm",
+    "stopSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/stopSign/",
+    "parkingSignTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/parkingSign/",
+    "negativTrainFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/negativ/",
+    "stopSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/stopSignTest/",
+    "parkingSignTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/parkingSignTest/",
+    "negativTestFolder":"/home/nandi/Workspaces/git/resource/TFSign/Video/TrainAndTest/negativTest/",
+
+
+    "ColorFilter":{
+        "blueInferiorLimit":[102,150,40],
+        "blueSuperiorLimit":[130,255,240],
+        "red1InferiorLimit":[0,150,40],
+        "red1SuperiorLimit":[12,255,240],
+        "red2InferiorLimit":[162,150,40],
+        "red2SuperiorLimit":[180,255,240]
+    },
+    "dilation":{
+        "size":3,
+        "apply":false
+    },
+    "erosion":{
+        "size":1,
+        "apply":false
+    },
+    "ImageSegment":{
+        "GradiantType":0,
+        "kernelSize":1,
+        "InferiorSquareRate":0.75,
+        "SuperiorSquareRate":1.25
+    },
+
+    "hogParams":{
+        "imageSize":[32,32],
+        "cellSize":[4,4],
+        "blockSize":[2,2],
+        "nrBins":9
+    },
+    "svmXml":"/home/nandi/Workspaces/git/TFSign_new/buildProg1/svmB4.xml"
+}

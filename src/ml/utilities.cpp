@@ -8,13 +8,13 @@ void my::readFromFolderImages(const std::string & f_folder, std::vector<cv::Mat>
         struct dirent *ent;
         while((ent = readdir(dir)) !=NULL){
             std::string l_fileName = ent->d_name;
-            
+
             std::string l_fileExtension = l_fileName.substr(l_fileName.find_last_of(".") + 1);
             if(l_fileExtension == "jpg" || l_fileExtension == "ppm" || l_fileExtension == "png" || l_fileExtension  == "jp2"){
                 // std::cout << ent->d_name << std::endl;
                 std::string l_fullpath = f_folder;
                 l_fullpath.append(l_fileName);
-                cv::Mat l_img = cv::imread(l_fullpath, CV_LOAD_IMAGE_COLOR);
+                cv::Mat l_img = cv::imread(l_fullpath, cv::IMREAD_COLOR);
                 l_imgContainer.push_back(l_img);
             }
         }
@@ -36,10 +36,10 @@ void my::testSVMBigFrame(   const std::string&      f_folderName
     std::vector<my::ImageSegment::Segment_t> l_StopSign;
     std::vector<my::ImageSegment::Segment_t> l_ParkingSign;
     std::vector<my::ImageSegment::Segment_t> l_FalseSign;
-
-    for(l_imgIt= l_imgContainer.begin(); l_imgIt<l_imgContainer.end() ; ++l_imgIt){
+    std::vector<my::ImageSegment::Segment_t> l_UnicSign;
+    uint iImg=0;
+    for(l_imgIt= l_imgContainer.begin(); l_imgIt<l_imgContainer.end() ; ++l_imgIt,++iImg){
         my::ColorFilter::ColorFilter_Data l_filterRes = f_colorfilter.apply(*l_imgIt);
-        cv::imshow("Filt",l_filterRes.Mask);
         std::vector<my::ImageSegment::Segment_t> l_segments;
         f_segmenting.apply(l_filterRes.blueMask,l_filterRes.redMask,l_segments);
         std::vector<my::ImageSegment::Segment_t>::iterator it;
@@ -49,8 +49,8 @@ void my::testSVMBigFrame(   const std::string&      f_folderName
             cv::Range l_y(it->top,it->top+it->height);
             cv::Mat l_sign=(*l_imgIt)(l_y,l_x);
             // cv::resize(,l_sign,cv::Size(64,64));
-            
-            
+
+
             std::vector<float> l_descriptors;
             f_hogCalc.apply(l_sign,l_descriptors);
             cv::Mat l_data(1, l_descriptors.size(), CV_32FC1, l_descriptors.data());
@@ -69,13 +69,20 @@ void my::testSVMBigFrame(   const std::string&      f_folderName
                     std::cout << "False sign" << std::endl;
                     l_FalseSign.push_back(*it);
                     break;
-            }            
-            cv::imshow(" ",l_sign);
-            cv::waitKey();
-            
+                case 3:
+                    std::cout << "Unic sign" << std::endl;
+                    l_UnicSign.push_back(*it);
+                    break;
+            }
+            // cv::imshow(" ",l_sign);
+            // cv::waitKey();
+
         }
-        
-        my::drawRenctangles(*l_imgIt,l_StopSign,l_ParkingSign,l_FalseSign);
+
+        // my::drawRenctangles(*l_imgIt,l_StopSign,l_ParkingSign,l_FalseSign,l_UnicSign);
+        std::string l_str=std::to_string(iImg);
+        cv::imwrite("img"+l_str+".png",*l_imgIt);
+        cv::imwrite("Filt"+l_str+".png",l_filterRes.Mask);
         cv::imshow(" ",*l_imgIt);
         cv::waitKey();
 
@@ -87,40 +94,97 @@ void my::testSVMBigFrame(   const std::string&      f_folderName
 
 
 void my::drawRenctangles(   cv::Mat&                                        f_img
-                            ,std::vector<my::ImageSegment::Segment_t>       f_StopSign
-                            ,std::vector<my::ImageSegment::Segment_t>       f_ParkingSign
-                            ,std::vector<my::ImageSegment::Segment_t>       f_FalseSign){
-    std::vector<my::ImageSegment::Segment_t>::iterator l_segmentIt;
-    for(l_segmentIt=f_ParkingSign.begin(); l_segmentIt<f_ParkingSign.end(); ++l_segmentIt){
-        cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
-        cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
-        cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(0,0,255),3);
-        cv::putText(f_img,"Parking",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(0,0,255));
+                            ,const std::vector< my::TrafficSignProcessing::TrafficSignSegment>& f_signs){
+                          // ,std::vector<my::TrafficSignProcessing::TrafficSignSegment>&       f_trafficsigns){
+
+    std::vector<my::TrafficSignProcessing::TrafficSignSegment>::const_iterator it;
+
+    for (it = f_signs.begin();it != f_signs.end();++it){
+          cv::Point l_p1(it->left,it->top);
+          cv::Point l_p2(it->left+it->width,it->top+it->height);
+          cv::Scalar color;
+          std::string text;
+          switch(it->signType){
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::StopSign:
+                      text="Stop";
+                      color=cv::Scalar(255,0,0);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::ParkingSign:
+                      text="Parking";
+                      color= cv::Scalar(0,0,255);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::Limit30:
+                      text="Limit30";
+                      color= cv::Scalar(0,255,0);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::NoLimit30:
+                      text="NoLimit30";
+                      color= cv::Scalar(255,255,0);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::Limit50:
+                      text="Limit50";
+                      color= cv::Scalar(255,0,255);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::NoLimit50:
+                      text="NoLimit50";
+                      color= cv::Scalar(0,255,255);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::NoStop:
+                      text="NoStop";
+                      color= cv::Scalar(255,255,255);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::NoParking:
+                      text="NoParking";
+                      color= cv::Scalar(125,125,0);
+                      break;
+                  case my::TrafficSignProcessing::TrafficSignTypes_t::NoVechile:
+                      text="NoVechile";
+                      color= cv::Scalar(125,0,125);
+                      break;
+                  default:
+                      color= cv::Scalar(0,0,0);
+                      text="";
+                      break;
+          }
+          cv::rectangle(f_img,l_p1,l_p2,color,1);
+          cv::putText(f_img,text,cv::Point(it->left+4,it->top-4),cv::FONT_HERSHEY_PLAIN,1,color);
     }
 
-    for(l_segmentIt=f_StopSign.begin(); l_segmentIt<f_StopSign.end(); ++l_segmentIt){
-        cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
-        cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
-        cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(255,0,0),3);
-        cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
-    }
-
-    for(l_segmentIt=f_FalseSign.begin(); l_segmentIt<f_FalseSign.end(); ++l_segmentIt){
-        cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
-        cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
-        cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(0,0,0),3);
-        // cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
-    }
+    // std::vector<my::ImageSegment::Segment_t>::iterator l_segmentIt;
+    // for(l_segmentIt=f_ParkingSign.begin(); l_segmentIt<f_ParkingSign.end(); ++l_segmentIt){
+    //     cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
+    //     cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
+    //     cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(0,0,255),3);
+    //     cv::putText(f_img,"Parking",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(0,0,255));
+    // }
+    //
+    // for(l_segmentIt=f_StopSign.begin(); l_segmentIt<f_StopSign.end(); ++l_segmentIt){
+    //     cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
+    //     cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
+    //     cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(255,0,0),3);
+    //     cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
+    // }
+    //
+    // for(l_segmentIt=f_FalseSign.begin(); l_segmentIt<f_FalseSign.end(); ++l_segmentIt){
+    //     cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
+    //     cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
+    //     cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(0,0,0),3);
+    //     // cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
+    // }
+    //
+    // for(l_segmentIt=f_UnicSign.begin(); l_segmentIt<f_UnicSign.end(); ++l_segmentIt){
+    //     cv::Point l_p1(l_segmentIt->left,l_segmentIt->top);
+    //     cv::Point l_p2(l_segmentIt->left+l_segmentIt->width,l_segmentIt->top+l_segmentIt->height);
+    //     cv::rectangle(f_img,l_p1,l_p2,cv::Scalar(0,255,255),3);
+    //     // cv::putText(f_img,"Stop",cv::Point(l_segmentIt->left+4,l_segmentIt->top-4),cv::FONT_HERSHEY_PLAIN,1,cv::Scalar(255,0,0));
+    // }
 }
 
 
 
 void my::testVideo(     const std::string&              f_folderPath
                         ,const std::string&             f_svmFileName
-                        ,my::ColorFilter&               f_colorFilter
-                        ,my::ImageSegment&              f_segmenting
-                        ,my::HogCalculation&            f_hogCalc
-                        ){
+                        ,const std::string&             f_settingsFileName){
     DIR *dir  =opendir(f_folderPath.c_str());
     std::vector<std::string> l_VideoFiles;
     // --------------------------------------------------------------------------------------------------------------------------
@@ -128,9 +192,9 @@ void my::testVideo(     const std::string&              f_folderPath
         struct dirent *ent;
         while((ent = readdir(dir)) !=NULL){
             std::string l_fileName = ent->d_name;
-            
+
             std::string l_fileExtension = l_fileName.substr(l_fileName.find_last_of(".") + 1);
-            if(l_fileExtension == "h264"){
+            if(l_fileExtension == "h264" || l_fileExtension == "mp4" ){
                 // std::cout << ent->d_name << std::endl;
                 std::string l_fullpath = f_folderPath;
                 l_fullpath.append(l_fileName);
@@ -143,10 +207,13 @@ void my::testVideo(     const std::string&              f_folderPath
         std::cout<<"Cannot find any video file.";
         return;
     }
+    my::Settings l_settings = my::Settings::readFile(f_settingsFileName);
 
-    my::TrafficSignProcessing l_trafficProcessing(f_colorFilter,f_segmenting,f_hogCalc,f_svmFileName);
+
+    std::vector<my::TrafficSignProcessing::TrafficSignSegment> l_signs;
+    my::TrafficSignProcessing l_trafficProcessing(l_settings);
     std::vector<std::string>::iterator it;
-    
+
     for (it=l_VideoFiles.begin(); it<l_VideoFiles.end(); ++it){
         std::cout<<"File:"<<(*it)<<std::endl;
         cv::VideoCapture l_videoCapture((*it));
@@ -159,7 +226,8 @@ void my::testVideo(     const std::string&              f_folderPath
         while(true){
             l_videoCapture>>l_frame;
             if(l_frame.empty()) break;
-            l_trafficProcessing.processFrameAndDraw(l_frame);
+            l_trafficProcessing.processFrameAndDraw(l_frame,l_signs);
+            l_signs.clear();
 
 
             cv::imshow("Video",l_frame);
@@ -167,6 +235,6 @@ void my::testVideo(     const std::string&              f_folderPath
             if(c==27)
             break;
         }
-    
+
     }
 }

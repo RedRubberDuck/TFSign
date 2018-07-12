@@ -28,12 +28,13 @@ void my::ImageSegment::apply(       const ::cv::Mat&                            
                                     ,my::ImageSegment::SegmentVector_t                      f_segments
                                     // ,std::vector<::my::ImageSegment::Segment_t>&            f_segments
                                     ){
-    // std::cout<<"Nr segments:"<<f_segments.size()<<std::endl;
-    applyColor(f_blueMask,::my::ImageSegment::ColorTypes_t::BLUE,f_segments);
+    // cv::imshow("blue",f_blueMask);
+    // cv::imshow("red",f_redMask);
+    // cv::waitKey();
     applyColor(f_redMask,::my::ImageSegment::ColorTypes_t::RED,f_segments);
-    // std::cout << "Verify";
-    // std::cout<<"Nr segments:"<<f_segments.size()<<std::endl;
+    applyColor(f_blueMask,::my::ImageSegment::ColorTypes_t::BLUE,f_segments);
     verify(f_segments);
+    // verify(f_segments);
 }
 
 void my::ImageSegment::applyColor(   const ::cv::Mat&                                       f_mask
@@ -44,7 +45,7 @@ void my::ImageSegment::applyColor(   const ::cv::Mat&                           
         case ImgSegGradType_t::Laplacian:
             cv::Laplacian(f_mask,l_edgeMask,CV_8U, m_kernelSize, 1, 0, cv::BORDER_DEFAULT );
             break;
-        case ImgSegGradType_t::Morphology:     
+        case ImgSegGradType_t::Morphology:
             cv::morphologyEx(f_mask,l_edgeMask,cv::MORPH_GRADIENT,m_kernel);
             break;
         default:
@@ -53,7 +54,7 @@ void my::ImageSegment::applyColor(   const ::cv::Mat&                           
     }
     cv::Mat l_labels, l_centroids,l_stats;
     int nccomps = cv::connectedComponentsWithStats(l_edgeMask,l_labels,l_stats,l_centroids,8,CV_32S);
-    
+
     // my::ImageSegment::showLabels(nccomps,l_labels,l_stats);
     segmentProc(nccomps,l_labels,l_stats,l_centroids,f_color,f_segments);
 }
@@ -63,7 +64,7 @@ void my::ImageSegment::segmentProc(     const uint&                             
                                         ,const cv::Mat&                                 f_labels
                                         ,const cv::Mat&                                 f_stats
                                         ,const cv::Mat&                                 f_centroids
-                                        ,const ColorTypes_t&                            f_color  
+                                        ,const ColorTypes_t&                            f_color
                                         ,std::vector<my::ImageSegment::Segment_t>&      f_segments){
     for (uint i = 1; i < f_nccomps; ++i){
         uint width = f_stats.at<int>(i, cv::CC_STAT_WIDTH);
@@ -71,13 +72,14 @@ void my::ImageSegment::segmentProc(     const uint&                             
         uint left = f_stats.at<int>(i, cv::CC_STAT_LEFT);
         uint top = f_stats.at<int>(i, cv::CC_STAT_TOP);
 
-        if(f_stats.at<int>(i,cv::CC_STAT_AREA)<20){
+        if(f_stats.at<int>(i,cv::CC_STAT_AREA)<60 and height*width < 200){
             continue;
         }
         double l_rate = (double)width/height;
         uint l_size = width * height;
-        
-        if ( (m_InferiorRate < l_rate && l_rate < m_SuperiorRate) && (l_size>40*40) ){
+
+
+        // if ((m_InferiorRate < l_rate && l_rate < m_SuperiorRate) || (0.35<l_rate && 0.65>l_rate) || (1.5 < l_rate && 2.5>l_rate)){
             my::ImageSegment::Segment_t l_segment;
             l_segment.color = f_color;
             l_segment.left = left;
@@ -85,35 +87,8 @@ void my::ImageSegment::segmentProc(     const uint&                             
             l_segment.width = width;
             l_segment.height = height;
             f_segments.push_back(l_segment);
-        }
-        // else if( 1.95 < l_rate && l_rate>2.05){
-        //     my::ImageSegment::Segment_t l_segment;
-        //     l_segment.color = f_color;
-        //     l_segment.left = left;
-        //     l_segment.top = top;
-        //     l_segment.width = width/2;
-        //     l_segment.height = height;
-        //     f_segments.push_back(l_segment);
-
-            
-        //     l_segment.left = left + width/2;
-            
-        //     f_segments.push_back(l_segment);
-
-        // }else if( 0.45 < l_rate && l_rate<0.55){
-        //     my::ImageSegment::Segment_t l_segment;
-        //     l_segment.color = f_color;
-        //     l_segment.left = left;
-        //     l_segment.top = top;
-        //     l_segment.width = width;
-        //     l_segment.height = height/2;
-        //     f_segments.push_back(l_segment);
-
-            
-        //     l_segment.top = top+height/2;
-
-        //     f_segments.push_back(l_segment);
         // }
+
     }
 }
 
@@ -123,41 +98,49 @@ void my::ImageSegment::segmentProc(     const uint&                             
 void my::ImageSegment::verify( std::vector<my::ImageSegment::Segment_t>& l_segments){
 
     std::vector<my::ImageSegment::Segment_t>::iterator it1, it2;
+
     if(l_segments.size()<2)
         return;
-    for (it1=l_segments.begin() ; it1 < l_segments.end() - 1 ;){
+    for (it1=l_segments.begin() ; it1 < l_segments.end();++it1){
         bool deleted=false;
-        for (it2 = it1+1 ; it2 < l_segments.end()  ; ){
-            bool l_inX12 = it1->left > it2->left && it1->left < it2->left+it2->width;
-            bool l_inY12 = it1->top > it2->top && it1->top < it2->top+it2->height;
-            
-            bool l_inX21 = it2->left > it1->left && it2->left < it1->left+it1->width;
-            bool l_inY21 = it2->top > it1->top && it2->top < it1->top+it1->height;
-            if( l_inX21 && l_inY21 ){
-                
-                // std::cout<<"Inside"<<std::endl;
-                // std::cout<<(int)(it2-l_segments.begin())<<" "<<(int)(it1-l_segments.begin())<<std::endl;
-                
+        // std::cout<<"f:"<<it1-l_segments.begin()<<std::endl;
+        for (it2 = it1+1 ; it2 < l_segments.end(); ){
+            // std::cout<<"s:"<<it2 - l_segments.begin()<<std::endl;
+            cv::Rect2d l_b1(it1->left,it1->top,it1->width,it1->height);
+            cv::Rect2d l_b2(it2->left,it2->top,it2->width,it2->height);
+            cv::Rect2d l_intersect = l_b1 & l_b2;
+
+            if(l_intersect.area()>0 && (l_intersect.area()==l_b1.area() || l_intersect.area()==l_b2.area() )){
+                cv::Rect2d l_union=l_b1|l_b2;
+                it1->top = l_union.y;
+                it1->left = l_union.x;
+                it1->width = l_union.width;
+                it1->height = l_union.height;
+                // std::cout<<"U:"<<it1-l_segments.begin()<<" "<<it2 - l_segments.begin()<<std::endl;
+                // if(l_intersect.area()==l_b1.area() || (l_intersect.area()!=l_b2.area() && l_b2.area()>l_b1.area())){
+                    // std::cout<<"QQQ:"<<it2->color<<" "<<it1->color<<std::endl;
+                it1->color = it2->color;
+
+                // }
                 l_segments.erase(it2);
-            }else if(l_inX12 && l_inY12) {
-                // std::cout<<"Inside"<<std::endl;
-                // std::cout<<(int)(it1-l_segments.begin())<<" "<<(int)(it2-l_segments.begin())<<std::endl;
-                deleted=true;
-                break;
-            }else{
-                ++it2;
+                // if(it2-1 != it1){
+                //     --it2;
+                // }
             }
+
+              else{
+                  ++it2;
+              }
+            //
+            // }
+
         }
-        if(!deleted){
-            ++it1;
-        }else{
-            l_segments.erase(it1);
-        }
+
     }
 }
 
 void my::ImageSegment::showLabels(  const uint&                  f_nccomps
-                                    ,const cv::Mat&              f_labels                
+                                    ,const cv::Mat&              f_labels
                                     ,const cv::Mat&              f_stats
                                     ){
     // std::cout<<"Nr comps:"<<f_nccomps <<std::endl;
@@ -177,7 +160,7 @@ void my::ImageSegment::showLabels(  const uint&                  f_nccomps
             // CV_Assert(0 <= label && label <= f_nccomps);
             img_color.at<cv::Vec3b>(y, x) = colors[label];
         }
-    
+
 
     cv::imshow("Label",img_color);
     cv::waitKey();

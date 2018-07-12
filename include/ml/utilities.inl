@@ -22,21 +22,21 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
             cv::Mat l_imgresized=(*itImg);
             // std::cout << "Img.src size:" << (*itImg).size() << std::endl;
             // cv::resize((*itImg), l_imgresized, cv::Size(100, 100));
-            // my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
-            // std::vector<my::ImageSegment::Segment_t> l_segments;
-            // l_segments.clear();
-            // f_segmenting.apply(l_FilteredImg.blueMask,l_FilteredImg.redMask,l_segments);
-            // std::vector<my::ImageSegment::Segment_t>::iterator it;
+            my::ColorFilter::ColorFilter_Data l_FilteredImg = f_colorFilter.apply(l_imgresized);
+            std::vector<my::ImageSegment::Segment_t> l_segments;
+            l_segments.clear();
+            f_segmenting.apply(l_FilteredImg.blueMask,l_FilteredImg.redMask,l_segments);
+            std::vector<my::ImageSegment::Segment_t>::iterator it;
 
-            // for (it = l_segments.begin(); it!=l_segments.end();++it){
-                
-            //     cv::Range l_x(it->left,it->left+it->width);
-            //     cv::Range l_y(it->top,it->top+it->height);
-            //     cv::Mat l_sign=l_imgresized(l_y,l_x);
+            for (it = l_segments.begin(); it!=l_segments.end();++it){
+
+                cv::Range l_x(it->left,it->left+it->width);
+                cv::Range l_y(it->top,it->top+it->height);
+                cv::Mat l_sign=l_imgresized(l_y,l_x);
                 // cv::resize(,l_sign,cv::Size(64,64));
-                
-            std::vector<float> l_descriptors;
-                
+
+                std::vector<float> l_descriptors;
+
                 // cv::imshow(" ",l_sign);
                 // cv::waitKey();
                 // std::ostringstream s;
@@ -45,9 +45,9 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
                 // cv::imwrite(picsName.c_str(),l_sign);
                 // ++imgIndex;
 
-            f_hogCalc.apply(l_imgresized,l_descriptors);
-            l_collectionDescriptors.push_back(l_descriptors);
-            // }
+                f_hogCalc.apply(l_sign,l_descriptors);
+                l_collectionDescriptors.push_back(l_descriptors);
+            }
         }
         my::DescriptionSaver l_saver(l_outputFileName);
         l_saver.saveDescription(l_collectionDescriptors);
@@ -59,7 +59,7 @@ void my::readAndSaveFeatures(   std::array<std::string,N>&                  f_in
 template<uint N>
 void my::readAndTrainSVM(           const std::array<std::string,N>&          f_dataFileNames
                                     ,const std::string&                 f_svmFileXML){
-    
+
     std::array<cv::Mat,N> l_dataCol;
     unsigned long l_nrSample = 0;
     unsigned long l_featuresLength = 0;
@@ -79,7 +79,7 @@ void my::readAndTrainSVM(           const std::array<std::string,N>&          f_
 
     unsigned long l_samplesIndex=0;
     for (uint i=0; i<N; ++i){
-        
+
         cv::Mat l_sample = l_dataCol[i];
         std::cout<<"Index"<<l_samplesIndex<<" "<<l_sample.rows<<std::endl;
         cv::Mat l_response = cv::Mat::ones(l_sample.rows,1,CV_32S)*i;
@@ -88,13 +88,13 @@ void my::readAndTrainSVM(           const std::array<std::string,N>&          f_
         l_sample.copyTo(l_tempSample);
         l_response.copyTo(l_tempResponse);
         l_samplesIndex += l_sample.rows;
-        
+
     }
 
     cv::Ptr<cv::ml::SVM> svm = cv::ml::SVM::create();
     svm->setType(cv::ml::SVM::C_SVC);
-    svm->setKernel(cv::ml::SVM::INTER);
-    svm->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 500, 1e-6));
+    svm->setKernel(cv::ml::SVM::LINEAR);
+    svm->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 400, 1e-6));
 
 
     std::cout<<l_samples.size()<<" "<<l_responses.size();
@@ -107,19 +107,25 @@ void my::readAndTrainSVM(           const std::array<std::string,N>&          f_
 template<uint N>
 void my::testSVM(   const std::array<std::string,N>&  f_testFileNames
                     ,const std::string&             f_svmFileXML){
-    
+
     cv::Ptr<cv::ml::SVM> svm = cv::ml::SVM::create();
     svm = svm->load(f_svmFileXML);
-    
+
     for(uint l_dataIndex=0; l_dataIndex<N; ++l_dataIndex){
         cv::Mat l_testData;
         std::cout<<"Data sample index"<<l_dataIndex<<std::endl;
         my::DescriptionSaver::loadDescription(f_testFileNames[l_dataIndex],l_testData);
+        uint l_correct = 0, l_failed = 0;
         for(uint i=0; i<l_testData.rows; i++){
             cv::Mat l_testSample = l_testData.row(i);
             unsigned int l_res =static_cast<unsigned int>(svm->predict(l_testSample));
-            std::cout<<"res:"<<l_res<<std::endl;
-        }   
+            if (l_dataIndex==l_res){
+              l_correct++;
+            }else{
+              l_failed++;
+            }
+            // std::cout<<"res:"<<l_res<<std::endl;
+        }
+        std::cout<<"total:"<<l_testData.rows<<std::endl<<"correct:"<<l_correct<<std::endl<<"failed:"<<l_failed<<std::endl;
     }
 }
-

@@ -20,7 +20,7 @@ my::HogCalculation::HogCalculation(const my::Settings&      f_settings)
 void my::HogCalculation::apply(const cv::Mat&           f_img
                                 ,std::vector<float>&    f_descriptors){
     cv::Mat l_gray;
-    cv::cvtColor(f_img, l_gray, CV_BGR2GRAY);
+    cv::cvtColor(f_img, l_gray, cv::COLOR_BGR2GRAY);
     cv::Mat l_resized; 
     cv::resize(l_gray,l_resized,m_imgSize);
     m_hog.compute(l_resized, f_descriptors);
